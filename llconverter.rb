@@ -35,9 +35,11 @@ end
 class CityLLInfoWrap  
   attr_accessor :dicDateToData 
   attr_accessor :lstArea
+  attr_accessor :lstLimitInfo
   def initialize()
     @dicDateToData = Hash.new
     @lstArea = Array.new
+    @lstLimitInfo = []
   end
 end
 
@@ -94,7 +96,7 @@ getAreaId = lambda do |cityCodeP,indexP|
 end
 
 # 各字段
-inputMainData.each do |item|
+inputMainData.each_with_index do |item,indexInMainData|
  mesIndex = item[1];
  cityCode = item[2];
  chepaihao = item[3];
@@ -116,8 +118,10 @@ inputMainData.each do |item|
  isRTXiuxiriDanShuang = rType == "4"; # 杭州
  isRTRun4Pause4 = rType == "5"; # 贵阳
 
- danhaoR = "0,2,4,6,8";
- shuanghaoR = "1,3,5,7,9";
+ # danhaoR = "0,2,4,6,8"
+ # shuanghaoR = "1,3,5,7,9"
+ danhaoR = "双号"
+ shuanghaoR = "单号"
  lstRNumEveryDay = nil
  # 根据格式处理号牌列表
  if(rNumber && rNumber.empty? == false)
@@ -294,40 +298,54 @@ inputMainData.each do |item|
     llItem << strDateCur
     llItem << strDateCur
 
-    # 日期范围加里
-    #llItem << dateRange
+    # 在对应哪条输入数据（索引0起）
+    llItem << indexInMainData
    
     lstLL << llItem
     llCount = llCount + 1
   end
+
+  arrayTemp = []
+  arrayTemp << indexInMainData
+  arrayTemp << dateRange
+  arrayTemp << weekRtInfo.join(";")
+  cityLL.lstLimitInfo << arrayTemp
 end
 
-  # 写区域数据
-  resultT = []
-  resultT << ["id", "city_code", "area"]
+# 写区域数据
+resultT = []
+resultT << ["id", "city_code", "area"]
   
-  dicCityCodeTo_DateToData.each do |keyP,valueP|
-    valueP.lstArea.each_with_index do |eleP,iP|
-      newArrayT=[]
-      newArrayT << getAreaId.call(keyP.to_i,iP)
-      newArrayT << keyP
-      newArrayT << eleP
-      resultT << newArrayT
+dicCityCodeTo_DateToData.each do |keyP,valueP|
+  valueP.lstArea.each_with_index do |eleP,iP|
+    newArrayT=[]
+    newArrayT << getAreaId.call(keyP.to_i,iP)
+    newArrayT << keyP
+    newArrayT << eleP
+    resultT << newArrayT
+  end
+end
+outputPath = File.join(Path,"rbout")
+FileAccessor.Write(File.join(outputPath,"区域表.txt"),resultT)
+
+# 写主数据
+resultT = []
+resultT << %w(id city_code date license_attri register type date_off_r thirty_one_r holiday_r time number english_number area_id msg_id create_at update_at limit_Info_Id)
+dicCityCodeTo_DateToData.each do |keyP,valueP|
+  valueP.dicDateToData.each_value do |value|
+    value.each do |ele|
+      resultT << ele  
     end
   end
+end
+FileAccessor.Write(File.join(outputPath,"主数据.txt"),resultT)
 
-  outputPath = File.join(Path,"rbout")
-  FileAccessor.Write(File.join(outputPath,"区域表.txt"),resultT)
-
-  # 写主数据
-  resultT = []
-  resultT << %w(id city_code date license_attri register type date_off_r thirty_one_r holiday_r time number english_number area_id msg_id create_at update_at)
-  dicCityCodeTo_DateToData.each do |keyP,valueP|
-    valueP.dicDateToData.each_value do |value|
-      value.each do |ele|
-        resultT << ele
-      end
-    end
+# 写主数据关联数据
+resultT = []
+resultT << %w(id date_range week_rt_info)
+dicCityCodeTo_DateToData.each do |keyP,valueP|
+  valueP.lstLimitInfo.each do |value|   
+    resultT << value
   end
-
-  FileAccessor.Write(File.join(outputPath,"主数据.txt"),resultT)
+end
+FileAccessor.Write(File.join(outputPath,"关联数据.txt"),resultT)
