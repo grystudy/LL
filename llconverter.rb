@@ -56,7 +56,18 @@ judgeIsWeekend = lambda do |str|
   [6,0].include?(convertDateTime.call(str).wday)
 end
 
-Path="LLData201605"
+Path = "LLData"
+maxIntT = 0
+Dir.entries(File.dirname(__FILE__)).each do |dirNameT|
+	if File.file?(dirNameT)
+		next
+	end	
+	if /^#{Path}(\d{6})$/i =~ dirNameT	
+	intT= $1.to_i
+		maxIntT = maxIntT > intT ? maxIntT : intT;
+	end
+end
+Path += maxIntT.to_s
 
 # 读节假日
 inputHoliday = FileAccessor.Read(File.join(Path,"inputHoliday.txt"))
