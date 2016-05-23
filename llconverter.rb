@@ -56,7 +56,7 @@ judgeIsWeekend = lambda do |str|
   [6,0].include?(convertDateTime.call(str).wday)
 end
 
-Path="限行"
+Path="LLData201605"
 
 # 读节假日
 inputHoliday = FileAccessor.Read(File.join(Path,"inputHoliday.txt"))
