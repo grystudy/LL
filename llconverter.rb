@@ -56,21 +56,21 @@ judgeIsWeekend = lambda do |str|
   [6,0].include?(convertDateTime.call(str).wday)
 end
 
-Path = "LLData"
+dataPath = "LLData"
 maxIntT = 0
 Dir.entries(File.dirname(__FILE__)).each do |dirNameT|
 	if File.file?(dirNameT)
 		next
 	end	
-	if /^#{Path}(\d{6})$/i =~ dirNameT	
+	if /^#{dataPath}(\d{6})$/i =~ dirNameT	
 	intT= $1.to_i
 		maxIntT = maxIntT > intT ? maxIntT : intT;
 	end
 end
-Path += maxIntT.to_s
+dataPath += maxIntT.to_s
 
 # 读节假日
-inputHoliday = FileAccessor.Read(File.join(Path,"inputHoliday.txt"))
+inputHoliday = FileAccessor.Read(File.join(dataPath,"inputHoliday.txt"))
 inputHoliday[0][0].delete!("\uFEFF")
 
 lstWorkWeekend = []
@@ -95,7 +95,7 @@ judgeWorkdayType = lambda do |str|
 end
 
 # 读主数据
-inputMainData = FileAccessor.Read(File.join(Path,"inputMainData.txt"))
+inputMainData = FileAccessor.Read(File.join(dataPath,"inputMainData.txt"))
 inputMainData.delete_at(0)
 puts inputMainData.count
 dicCityCodeTo_DateToData = Hash.new
@@ -336,7 +336,7 @@ dicCityCodeTo_DateToData.each do |keyP,valueP|
     resultT << newArrayT
   end
 end
-outputPath = File.join(Path,"rbout")
+outputPath = File.join(dataPath,"rbout")
 FileAccessor.Write(File.join(outputPath,"区域表.txt"),resultT)
 
 # 写主数据
