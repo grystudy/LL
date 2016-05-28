@@ -1,3 +1,5 @@
+<%= form_tag("/rlquery/city_info", method: "get") do%>
+
 <script>
 function city_selected()
 {
@@ -8,9 +10,13 @@ function city_selected()
 <h1>限行城市</h1>
 <p>
   <label id = "city_label">请选择</label>
-  <select id="select_city" name="city_list" onchange="city_selected()">
+  <select id="select_city" name="city_code" onchange="city_selected()">
     <% @cities.each do |city_hash| %>
       <option value=  <%=city_hash["city"]%>> <%=city_hash["city_name"]%></option>
     <% end %>
   </select>
 </p>
+
+<input name="commit" type="submit" value="Search" />
+
+<% end %>

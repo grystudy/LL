@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'rlquery/city_info'
+
   get 'rlquery/index'
 
   # The priority is based upon order of creation: first created -> highest priority.
