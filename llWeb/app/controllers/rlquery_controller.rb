@@ -22,12 +22,32 @@ class RlqueryController < ApplicationController
   	# @label_value=params[:label_value]
   	@city_code=params[:city_code]
 
+  	uri = 'http://120.27.94.60/api/v1/traffic_restrictions/getCityGeneral?key=mxnavi&city='  + @city_code 
+    html_response1 = ""
+    # open(uri) do |http|  
+    #   html_response1 = http.read  
+    # end  
+
   	uri = 'http://120.27.94.60/api/v1/traffic_restrictions/getCityRestrict?key=mxnavi&city=' + @city_code  
     html_response2 = nil  
     open(uri) do |http|  
     html_response2 = http.read  
     end  
 
-    @city_detail_text = html_response2
+    @city_general_text = html_response1
+
+    @detail_hash = json_to_hash(html_response2)
+
+    t = @detail_hash["localcar"]
+    t = json_to_hash(t) if  t.class == "".class 
+    @loca_hash = t
+
+    t = @detail_hash["foreigncar"]
+    t = json_to_hash(t) if  t.class == "".class 
+    @fori_hash = t
+
+    t = @detail_hash["allcars"]
+    t = json_to_hash(t) if  t.class == "".class 
+    @allc_hash = t
   end
 end

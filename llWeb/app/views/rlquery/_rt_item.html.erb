@@ -1,0 +1,15 @@
+  <% @temp_hash.each_with_index do |item_hash , i| %>  
+
+    <% def getStr(strT)%>  
+      <% strT ? strT : "" %>  
+    <% end %>  
+    <br><label>第</label><%= i+1%><label>个限制项:</label>
+    
+    <br><label>未来七天: </label><%= getStr(item_hash["number"])%>
+    
+    <br><label>信息: </label><%= getStr(item_hash["date"]) + " " + getStr( item_hash["week"]) + " " + getStr(item_hash["time"]) + " " + getStr( item_hash["rtype"]) + " " + getStr( item_hash["engrpnum"]) + " 法定假" + getStr( item_hash["holiday"]) %>    
+    
+    <br><label>区域: </label><%= getStr (item_hash["area"]) %>
+    
+    <br><label>原始信息: </label><%= getStr( item_hash["msg"]) %>
+  <% end %>

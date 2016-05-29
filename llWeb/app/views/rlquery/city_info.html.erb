@@ -3,13 +3,34 @@
 
 <p>
   <strong>Code:</strong>
-  <%= @city_code %>
+  <%= @city_code%>
 </p>
 
+<p>
+  <strong>概要:</strong>
+  <%= @city_general_text  %>
+</p>
 
 <p>
-  <strong>detail:</strong>
-  <%= @city_detail_text  %>
+  <strong>详细:</strong><br>
+  <%= @detail_hash["cityname"]+"  " + @detail_hash["city"]  %>
+
+  <% @temp_hashtemp_hash = @loca_hash  %>
+  <% if @temp_hash  %>
+  <br><br><label>本地车辆: </label>
+  <%= render 'rt_item' %>
+  <% end  %>
+
+  <% @temp_hash = @fori_hash  %>
+  <% if @temp_hash  %>
+  <br><br><label>外地车辆: </label>  
+  <%= render 'rt_item' %>
+  <% end  %>
+  <% @temp_hash = @allc_hash  %>
+  <% if @temp_hash  %>
+  <br><br><label>所有车辆: </label>
+  <%= render 'rt_item' %>
+  <% end  %>
 </p>
 
 
