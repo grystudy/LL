@@ -2,8 +2,11 @@ class RlqueryController < ApplicationController
   require 'json'
 
   def json_to_hash(json)
+    if json.class != "".class 
+      return json
+    end
     json_result = JSON.parse json
-    return json_result
+    json_result
   end
 
   require "open-uri"  
@@ -24,9 +27,9 @@ class RlqueryController < ApplicationController
 
   	uri = 'http://120.27.94.60/api/v1/traffic_restrictions/getCityGeneral?key=mxnavi&city='  + @city_code 
     html_response1 = ""
-    # open(uri) do |http|  
-    #   html_response1 = http.read  
-    # end  
+    open(uri) do |http|  
+      html_response1 = http.read  
+    end  
 
   	uri = 'http://120.27.94.60/api/v1/traffic_restrictions/getCityRestrict?key=mxnavi&city=' + @city_code  
     html_response2 = nil  
@@ -34,20 +37,20 @@ class RlqueryController < ApplicationController
     html_response2 = http.read  
     end  
 
-    @city_general_text = html_response1
+    @city_general = json_to_hash(html_response1)
 
     @detail_hash = json_to_hash(html_response2)
 
     t = @detail_hash["localcar"]
-    t = json_to_hash(t) if  t.class == "".class 
+    t = json_to_hash(t) 
     @loca_hash = t
 
     t = @detail_hash["foreigncar"]
-    t = json_to_hash(t) if  t.class == "".class 
+    t = json_to_hash(t) 
     @fori_hash = t
 
     t = @detail_hash["allcars"]
-    t = json_to_hash(t) if  t.class == "".class 
+    t = json_to_hash(t)
     @allc_hash = t
   end
 end
