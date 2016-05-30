@@ -1,12 +1,5 @@
 <%= link_to '选择城市', root_path %>
-<h1>城市限行信息</h1>
-
-<p>
-  <strong>Code:</strong>
-  <%= @city_code%>
-</p>
-
-
+<h1>城市限行信息 Code: <%= @city_code%></h1>
 <fieldset>
     <legend>概要:</legend>
     <% @temp = @city_general %>
@@ -26,26 +19,21 @@
    <br>
    <% end  %>
   </fieldset>
-
-
 <fieldset>
-  <legend>详细:</legend>
-  <%= @detail_hash["cityname"]+"  " + @detail_hash["city"]  %>
-
+  <legend>详细: <%= @detail_hash["cityname"]+"  " + @detail_hash["city"]  %></legend>  
   <% @temp_hash = @loca_hash  %>
-  <% if @temp_hash  %>
-  <br><br><label>本地车辆: </label>
+  <% if @temp_hash && @temp_hash.count>0 %>
+  <h2>本地车辆: </h2>
   <%= render 'rt_item' %>
   <% end  %>
-
   <% @temp_hash = @fori_hash  %>
-  <% if @temp_hash  %>
-  <br><br><label>外地车辆: </label>  
+  <% if @temp_hash && @temp_hash.count>0 %>
+  <h2>外地车辆: </h2>  
   <%= render 'rt_item' %>
   <% end  %>
   <% @temp_hash = @allc_hash  %>
-  <% if @temp_hash  %>
-  <br><br><label>所有车辆: </label>
+  <% if @temp_hash && @temp_hash.count>0 %>
+  <h3>所有车辆: </h3>
   <%= render 'rt_item' %>
   <% end  %>
 </fieldset>

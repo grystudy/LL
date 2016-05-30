@@ -1,15 +1,37 @@
   <% @temp_hash.each_with_index do |item_hash , i| %>  
-
     <% def getStr(strT)%>  
       <% strT ? strT : "" %>  
     <% end %>  
-    <br><label>第</label><%= i+1%><label>个限制项:</label>
-    
-    <br><label>未来七天: </label><%= getStr(item_hash["number"])%>
-    
-    <br><label>信息: </label><%= getStr(item_hash["date"]) + " " + getStr( item_hash["week"]) + " " + getStr(item_hash["time"]) + " " + getStr( item_hash["rtype"]) + " " + getStr( item_hash["engrpnum"]) + " 法定假" + getStr( item_hash["holiday"]) %>    
-    
-    <br><label>区域: </label><%= getStr (item_hash["area"]) %>
-    
+
+    <fieldset>
+      <legend>第<%= i+1%>个限制项:</legend>
+      <table border="1"  width="500" >  
+        <label>未来七天: </label> 
+          <tr>  
+            <% getStr(item_hash["number"]).split(";").each do |itemT|%>
+            <td align="center"> <%= itemT %></td>  
+            <% end %>  
+         </tr>  
+      </table>  
+<br>            
+        <table border="1" width="800" >  
+          <tr>  
+            <th>日期</th>  
+            <th>时间</th> 
+            <th>类型</th>  
+            <th>英文牌照处理方式</th>  
+            <th>法定假</th>  
+          </tr>  
+          <tr>  
+            <td align="center"> <%= getStr(item_hash["date"]) +" "+ getStr(item_hash["week"]) %></td>  
+            <td align="center"><%= getStr(item_hash["time"])%></td>  
+            <td align="center"><%= getStr(item_hash["rtype"])%></td>  
+            <td align="center"> <%= getStr(item_hash["engrpnum"]) %></td>  
+            <td align="center"><%= getStr(item_hash["holiday"]) %></td>  
+          </tr>  
+        </table>  
+            
+    <br><label>区域: </label><%= getStr (item_hash["area"]) %>    
     <br><label>原始信息: </label><%= getStr( item_hash["msg"]) %>
+    </fieldset>
   <% end %>
