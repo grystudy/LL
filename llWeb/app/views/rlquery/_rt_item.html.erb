@@ -1,4 +1,11 @@
-  <% @temp_hash.each_with_index do |item_hash , i| %>  
+<script>         
+function showOri(s,i)
+{
+ console.log(s  + " " + i);  
+ $("#label_ori"+i).toggle();  
+}
+</script>  
+  <% @temp_hash.each_with_index do |item_hash , i| %> 
     <% def getStr(strT)%>  
       <% strT ? strT : "" %>  
     <% end %>  
@@ -13,7 +20,7 @@
             <% end %>  
          </tr>  
       </table>  
-<br>            
+		<br>            
         <table border="1" width="800" >  
           <tr>  
             <th>日期</th>  
@@ -30,8 +37,11 @@
             <td align="center"><%= getStr(item_hash["holiday"]) %></td>  
           </tr>  
         </table>  
-            
-    <br><label>区域: </label><%= getStr (item_hash["area"]) %>    
-    <br><label>原始信息: </label><%= getStr( item_hash["msg"]) %>
+
+    <br><label>区域: </label><%= getStr (item_hash["area"]) %>   
+    <% strTMsg = '911' %> 
+    <br><button onclick=showOri(<%=strTMsg%>,<%= @label_id.to_s %>)>原始信息</button>
+    <br><label id =<%=  "label_ori" + @label_id.to_s %> hidden="hidden"><%=getStr(item_hash["msg"])%>  </label>
     </fieldset>
+    <% @label_id = @label_id + 1%> 
   <% end %>
