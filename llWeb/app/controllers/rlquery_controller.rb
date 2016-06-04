@@ -10,13 +10,21 @@ class RlqueryController < ApplicationController
   end
 
   require "open-uri"  
+  
+  def read_api(uri)
+   begin
+    open(uri) do |http|  
+  	  return http.read  
+    end 
+    rescue
+    return "{\"rspcode\":0,\"city\":\"\",\"cityname\":\"访问API失败\",\"localcar\":[],\"foreigncar\":[],\"allcars\":[]}"
+      end 
+  end
 
   def index
     uri = 'http://120.27.94.60/api/v1/traffic_restrictions/getCityList?key=mxnavi'  
-  	html_response = nil  
-	open(uri) do |http|  
-  	  html_response = http.read  
-   	end  
+  	html_response = read_api(uri) 
+	
    	city_res= json_to_hash(html_response)
    	@cities=json_to_hash( city_res["data"])
   end
@@ -26,16 +34,10 @@ class RlqueryController < ApplicationController
   	@city_code=params[:city_code]
 
   	uri = 'http://120.27.94.60/api/v1/traffic_restrictions/getCityGeneral?key=mxnavi&city='  + @city_code 
-    html_response1 = ""
-    open(uri) do |http|  
-      html_response1 = http.read  
-    end  
+    html_response1 = read_api(uri)
 
   	uri = 'http://120.27.94.60/api/v1/traffic_restrictions/getCityRestrict?key=mxnavi&city=' + @city_code  
-    html_response2 = nil  
-    open(uri) do |http|  
-    html_response2 = http.read  
-    end  
+    html_response2 = read_api(uri)
 
     @city_general = json_to_hash(html_response1)
 

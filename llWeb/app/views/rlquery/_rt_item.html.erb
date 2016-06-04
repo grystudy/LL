@@ -39,8 +39,8 @@ function showOri(s,i)
         </table>  
 
     <br><label>区域: </label><%= getStr (item_hash["area"]) %>   
-    <% strTMsg = '911' %> 
-    <br><button onclick=showOri(<%=strTMsg%>,<%= @label_id.to_s %>)>原始信息</button>
+    <% strTMsg = '调用' %> 
+    <br><button onclick=showOri("<%= strTMsg %>","<%= @label_id.to_s %>")>原始信息</button>
     <br><label id =<%=  "label_ori" + @label_id.to_s %> hidden="hidden"><%=getStr(item_hash["msg"])%>  </label>
     </fieldset>
     <% @label_id = @label_id + 1%> 
