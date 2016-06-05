@@ -62,7 +62,7 @@ Dir.entries(File.dirname(__FILE__)).each do |dirNameT|
 	if File.file?(dirNameT)
 		next
 	end	
-	if /^#{dataPath}(\d{6})$/i =~ dirNameT	
+	if /^#{dataPath}(\d{6,8})$/i =~ dirNameT	
 	intT= $1.to_i
 		maxIntT = maxIntT > intT ? maxIntT : intT;
 	end
@@ -108,20 +108,35 @@ end
 
 # 各字段
 inputMainData.each_with_index do |item,indexInMainData|
- mesIndex = item[1];
- cityCode = item[2];
- chepaihao = item[3];
- bendiwaidiType = item[4];
- waidiRegisterType = item[5];
- rType = item[6];
- isWorkWeekendR = item[7] == "1";
- isHolidayR = item[8] == "1";
- englishR = item[9];
- isThirtyoneR = item[10] == "1";
- rNumber = item[11];
- timeRange = item[12];
- dateRange = item[13];
- strArea = item[14];
+ i_index_temp = 0;
+ i_index_temp = i_index_temp + 1;
+ mesIndex = item[i_index_temp]; 
+ i_index_temp = i_index_temp + 1;
+ cityCode = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ chepaihao = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ bendiwaidiType = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ waidiRegisterType = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ rType = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ isWorkWeekendR = item[i_index_temp] == "1";
+ i_index_temp = i_index_temp + 1;
+ isHolidayR = item[i_index_temp] == "1";
+ i_index_temp = i_index_temp + 1;
+ englishR = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ isThirtyoneR = item[i_index_temp] == "1";
+ i_index_temp = i_index_temp + 1;
+ rNumber = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ timeRange = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ dateRange = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ strArea = item[i_index_temp];
 
  isRTRiqi = rType == "1";
  isRTXingqi = rType == "2";
