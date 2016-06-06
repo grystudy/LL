@@ -3,7 +3,7 @@ module FileAccessor
   New_Line="\n"
 
   def Read(fileName)
-  	File.open(fileName,"r", :encoding => "UTF-8") do |io|		
+  	File.open(fileName,"r", :encoding => 'UTF-8') do |io|		
       lines=[]
       io.each do |line|
               array = line.chop!.split(Tab)             			 		     
@@ -13,13 +13,36 @@ module FileAccessor
   	end
   end
 
+  require 'win32ole'
+  def self.ReadExcel(file_name)
+  	excel = WIN32OLE.new("excel.application")
+    workbook = excel.Workbooks.Open(file_name)    
+	worksheet = workbook.Worksheets(1) 
+	worksheet.Select
+	row = worksheet.usedrange.rows.count
+	column = worksheet.usedrange.columns.count
+	lines=[]
+	for i in 1..row do
+		array = []
+  		for j in 1..column do
+    	array << worksheet.usedrange.cells(i,j).value.to_i
+  		end 
+  		lines << array
+	end
+	workbook.close
+	excel.Quit
+	lines
+  end
+
   def Write(fileName, data)
+  	return if !data
+
   	dirName=File.dirname(fileName)  	  
   	if(!File.directory?(dirName))
   		Dir.mkdir(File.dirname(fileName))
   	end
 
-  	File.open(fileName, "w", :encoding => "UTF-8") do |io|
+  	File.open(fileName, "w", :encoding => 'UTF-8') do |io|
   	  	data.each_with_index do |line,i|
   		  	io.write line.join(Tab)
           if i != data.count - 1            
@@ -28,8 +51,14 @@ module FileAccessor
   		end
   	end
   end 
+  require 'pathname'
+  def ConvertExcel(source,target)
+    Write(target,ReadExcel(File.join(Pathname.new(File.dirname(__FILE__)).realpath,source)))
+  end
+
   module_function :Read
   module_function :Write
+  module_function :ConvertExcel
 end
 
 class CityLLInfoWrap  
@@ -69,8 +98,25 @@ Dir.entries(File.dirname(__FILE__)).each do |dirNameT|
 end
 dataPath += maxIntT.to_s
 
+# 输入文件转换
+holiday_file_name = File.join(dataPath,"inputHoliday.txt")
+main_data_file_name = File.join(dataPath,"inputMainData.txt")
+
+if !File.exist?(holiday_file_name)
+  excel_file_name = File.join(dataPath,"2016年节假日数据.xlsx")
+  if !File.exist?(excel_file_name)
+  	puts "没有输入文件!"
+  	return
+  end
+
+  FileAccessor.ConvertExcel(excel_file_name,holiday_file_name)
+end
+
+if !File.exist?(main_data_file_name)
+end
+
 # 读节假日
-inputHoliday = FileAccessor.Read(File.join(dataPath,"inputHoliday.txt"))
+inputHoliday = FileAccessor.Read(holiday_file_name)
 inputHoliday[0][0].delete!("\uFEFF")
 
 lstWorkWeekend = []
@@ -95,8 +141,9 @@ judgeWorkdayType = lambda do |str|
 end
 
 # 读主数据
-inputMainData = FileAccessor.Read(File.join(dataPath,"inputMainData.txt"))
+inputMainData = FileAccessor.Read(main_data_file_name)
 inputMainData.delete_at(0)
+
 puts inputMainData.count
 dicCityCodeTo_DateToData = Hash.new
 allAreaCount = 0
