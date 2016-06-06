@@ -97,7 +97,7 @@ namespace ConsoleApplication1
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            var path = @"..\..\..\..\..\LLData201605";
+            var path = @"..\..\..\..\..\LLData20160606";
             #region 读详细信息去掉其中的\n并重写
             var inputDetail = Read(Path.Combine(path, @"inputDetail.txt"));
             // 小心\n

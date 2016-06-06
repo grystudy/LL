@@ -5,8 +5,8 @@ module FileAccessor
   def Read(fileName)
   	File.open(fileName,"r", :encoding => 'UTF-8') do |io|
       lines=[]
-      io.readlines("\n").each do |line|
-              array = line.chop!.split(Tab)             			 		     
+      io.each do |line|
+              array = line.chomp.split(Tab)             			 		     
               lines << array
       end
       lines
@@ -25,7 +25,7 @@ module FileAccessor
 	for i in 1..row do
 		array = []
   		for j in 1..column do
-    	array << worksheet.usedrange.cells(i,j).value.to_i
+    	array << worksheet.usedrange.cells(i,j).Text.to_s.delete("\n").delete("\"")
   		end 
   		lines << array
 	end
@@ -59,4 +59,24 @@ module FileAccessor
   module_function :Read
   module_function :Write
   module_function :ConvertExcel
+
+  def CalcDataPath
+    dataPath = "LLData"
+    maxIntT = 0
+    Dir.entries(File.dirname(__FILE__)).each do |dirNameT|
+      if File.file?(dirNameT)
+        next
+      end 
+      if /^#{dataPath}(\d{6,8})$/i =~ dirNameT  
+      intT= $1.to_i
+        maxIntT = maxIntT > intT ? maxIntT : intT;
+      end
+    end
+    dataPath += maxIntT.to_s
+    dataPath
+  end
+  module_function :CalcDataPath
 end
+
+InputHoliday = "inputHoliday.txt"
+InputMainData = "inputMainData.txt"

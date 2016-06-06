@@ -1,5 +1,4 @@
 require File.join(File.dirname(__FILE__),"FileAccessor.rb")
-require File.join(File.dirname(__FILE__),"input.rb")
 
 class CityLLInfoWrap  
   attr_accessor :dicDateToData 
@@ -15,6 +14,7 @@ end
 require "date"
 
 convertDateTime = lambda do |strDate|
+	p strDate if strDate.length != 8
 	year = strDate[0,4].force_encoding("UTF-8")
 	month = strDate[4,2]
 	day = strDate[6,2]	
@@ -25,24 +25,11 @@ judgeIsWeekend = lambda do |str|
   [6,0].include?(convertDateTime.call(str).wday)
 end
 
-dataPath = InputPretreament.CalcDataPath
+dataPath = FileAccessor.CalcDataPath
 
 # 输入文件转换
-holiday_file_name = File.join(dataPath,InputPretreament::InputHoliday)
-main_data_file_name = File.join(dataPath,InputPretreament::InputMainData)
-
-# if !File.exist?(holiday_file_name)
-#   excel_file_name = File.join(dataPath,"2016年节假日数据.xlsx")
-#   if !File.exist?(excel_file_name)
-#   	puts "没有输入文件!"
-#   	return
-#   end
-
-#   FileAccessor.ConvertExcel(excel_file_name,holiday_file_name)
-# end
-
-# if !File.exist?(main_data_file_name)
-# end
+holiday_file_name = File.join(dataPath,InputHoliday)
+main_data_file_name = File.join(dataPath,InputMainData)
 
 # 读节假日
 inputHoliday = FileAccessor.Read(holiday_file_name)
@@ -95,6 +82,8 @@ inputMainData.each_with_index do |item,indexInMainData|
  bendiwaidiType = item[i_index_temp];
  i_index_temp = i_index_temp + 1;
  waidiRegisterType = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ isEventOri = item[i_index_temp];
  i_index_temp = i_index_temp + 1;
  rType = item[i_index_temp];
  i_index_temp = i_index_temp + 1;
@@ -302,6 +291,9 @@ inputMainData.each_with_index do |item,indexInMainData|
 
     # 在对应哪条输入数据（索引0起）
     llItem << indexInMainData
+
+    # 是否事件限行
+    llItem << isEventOri
    
     lstLL << llItem
     llCount = llCount + 1
@@ -332,7 +324,7 @@ FileAccessor.Write(File.join(outputPath,"区域表.txt"),resultT)
 
 # 写主数据
 resultT = []
-resultT << %w(id city_code date license_attri register type date_off_r thirty_one_r holiday_r time number english_number area_id msg_id create_at update_at limit_Info_Id)
+resultT << %w(id city_code date license_attri register type date_off_r thirty_one_r holiday_r time number english_number area_id msg_id create_at update_at limit_Info_Id trrt)
 dicCityCodeTo_DateToData.each do |keyP,valueP|
   valueP.dicDateToData.each_value do |value|
     value.each do |ele|
