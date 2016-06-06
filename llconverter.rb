@@ -3,7 +3,7 @@ module FileAccessor
   New_Line="\n"
 
   def Read(fileName)
-  	File.open(fileName,"r", :encoding => "UTF-8") do |io|		
+  	File.open(fileName,"r", :encoding => 'UTF-8') do |io|		
       lines=[]
       io.each do |line|
               array = line.chop!.split(Tab)             			 		     
@@ -13,13 +13,36 @@ module FileAccessor
   	end
   end
 
+  require 'win32ole'
+  def self.ReadExcel(file_name)
+  	excel = WIN32OLE.new("excel.application")
+    workbook = excel.Workbooks.Open(file_name)    
+	worksheet = workbook.Worksheets(1) 
+	worksheet.Select
+	row = worksheet.usedrange.rows.count
+	column = worksheet.usedrange.columns.count
+	lines=[]
+	for i in 1..row do
+		array = []
+  		for j in 1..column do
+    	array << worksheet.usedrange.cells(i,j).value.to_i
+  		end 
+  		lines << array
+	end
+	workbook.close
+	excel.Quit
+	lines
+  end
+
   def Write(fileName, data)
+  	return if !data
+
   	dirName=File.dirname(fileName)  	  
   	if(!File.directory?(dirName))
   		Dir.mkdir(File.dirname(fileName))
   	end
 
-  	File.open(fileName, "w", :encoding => "UTF-8") do |io|
+  	File.open(fileName, "w", :encoding => 'UTF-8') do |io|
   	  	data.each_with_index do |line,i|
   		  	io.write line.join(Tab)
           if i != data.count - 1            
@@ -28,8 +51,14 @@ module FileAccessor
   		end
   	end
   end 
+  require 'pathname'
+  def ConvertExcel(source,target)
+    Write(target,ReadExcel(File.join(Pathname.new(File.dirname(__FILE__)).realpath,source)))
+  end
+
   module_function :Read
   module_function :Write
+  module_function :ConvertExcel
 end
 
 class CityLLInfoWrap  
@@ -62,15 +91,32 @@ Dir.entries(File.dirname(__FILE__)).each do |dirNameT|
 	if File.file?(dirNameT)
 		next
 	end	
-	if /^#{dataPath}(\d{6})$/i =~ dirNameT	
+	if /^#{dataPath}(\d{6,8})$/i =~ dirNameT	
 	intT= $1.to_i
 		maxIntT = maxIntT > intT ? maxIntT : intT;
 	end
 end
 dataPath += maxIntT.to_s
 
+# 输入文件转换
+holiday_file_name = File.join(dataPath,"inputHoliday.txt")
+main_data_file_name = File.join(dataPath,"inputMainData.txt")
+
+if !File.exist?(holiday_file_name)
+  excel_file_name = File.join(dataPath,"2016年节假日数据.xlsx")
+  if !File.exist?(excel_file_name)
+  	puts "没有输入文件!"
+  	return
+  end
+
+  FileAccessor.ConvertExcel(excel_file_name,holiday_file_name)
+end
+
+if !File.exist?(main_data_file_name)
+end
+
 # 读节假日
-inputHoliday = FileAccessor.Read(File.join(dataPath,"inputHoliday.txt"))
+inputHoliday = FileAccessor.Read(holiday_file_name)
 inputHoliday[0][0].delete!("\uFEFF")
 
 lstWorkWeekend = []
@@ -95,8 +141,9 @@ judgeWorkdayType = lambda do |str|
 end
 
 # 读主数据
-inputMainData = FileAccessor.Read(File.join(dataPath,"inputMainData.txt"))
+inputMainData = FileAccessor.Read(main_data_file_name)
 inputMainData.delete_at(0)
+
 puts inputMainData.count
 dicCityCodeTo_DateToData = Hash.new
 allAreaCount = 0
@@ -108,20 +155,35 @@ end
 
 # 各字段
 inputMainData.each_with_index do |item,indexInMainData|
- mesIndex = item[1];
- cityCode = item[2];
- chepaihao = item[3];
- bendiwaidiType = item[4];
- waidiRegisterType = item[5];
- rType = item[6];
- isWorkWeekendR = item[7] == "1";
- isHolidayR = item[8] == "1";
- englishR = item[9];
- isThirtyoneR = item[10] == "1";
- rNumber = item[11];
- timeRange = item[12];
- dateRange = item[13];
- strArea = item[14];
+ i_index_temp = 0;
+ i_index_temp = i_index_temp + 1;
+ mesIndex = item[i_index_temp]; 
+ i_index_temp = i_index_temp + 1;
+ cityCode = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ chepaihao = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ bendiwaidiType = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ waidiRegisterType = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ rType = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ isWorkWeekendR = item[i_index_temp] == "1";
+ i_index_temp = i_index_temp + 1;
+ isHolidayR = item[i_index_temp] == "1";
+ i_index_temp = i_index_temp + 1;
+ englishR = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ isThirtyoneR = item[i_index_temp] == "1";
+ i_index_temp = i_index_temp + 1;
+ rNumber = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ timeRange = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ dateRange = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ strArea = item[i_index_temp];
 
  isRTRiqi = rType == "1";
  isRTXingqi = rType == "2";
