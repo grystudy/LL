@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>LlInputWeb</title>
+    <title>限行规则录入</title>
     <%= csrf_meta_tags %>
 
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
@@ -9,6 +9,45 @@
   </head>
 
   <body>
-    <%= yield %>
+  <header role="banner">
+	<!-- START NAVIGATION -->
+	<nav role="navigation">
+		<ul class="nav">
+			<li><a href="/home/index">主页</a></li>
+			<li><a href="/products/">Products</a>
+				<ul class="submenu">
+					<li><a href="/products/phones.html">Phones</a></li>
+					<li><a href="/products/accessories.html">Accessories</a></li>
+				</ul>
+			</li>
+			<li><a href="/support/">Support</a>
+				<ul class="submenu">
+					<li><a href="/support/forum/">Community Forum</a></li>
+					<li><a href="/support/contact-us.html">Contact Us</a></li>
+					<li><a href="/support/how-to-guides.html">How-to Guides</a></li>				
+				</ul>
+			</li>
+			<li>链接
+                                <ul class="submenu">
+					<li><a href="http://120.27.94.60:3001/rlquery/index" rel ="external" target ="限行查询">限行查询网站</a></li>
+					
+				</ul>
+</li>
+		</ul><!-- end ul with class="nav" -->
+	</nav>
+	<!-- end navigation -->
+</header>
+
+<main role="main">
+	<!--<ol class="breadcrumb">
+		<li><a href="/home/index">主页</a></li>
+		<li><a href="/products/">Products</a></li>
+		<li><a href="/products/phones.html">Phones</a></li>
+		<li>The Fone 7.0<sup>TM</sup></li>		
+	</ol>-->
+
+<%= yield %>
+</main>
+    
   </body>
 </html>
