@@ -44,3 +44,13 @@ thead th {
 	border-bottom: 3px solid #000;
 	text-transform: uppercase;
 }
+
+    td  
+    {  
+     white-space: nowrap;  
+    }  
+
+div
+{
+overflow-x: auto;
+}

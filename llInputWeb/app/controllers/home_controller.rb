@@ -54,7 +54,8 @@ class HomeController < ApplicationController
       end
       data = Read(temp_path)
       data_for_view = convertUI(data)
-      return nil if !data_for_view
+      return nil if !data_for_view || data_for_view.length == 0 
+      data_for_view.shift
       $main_data = data_for_view
     rescue 
       return nil
