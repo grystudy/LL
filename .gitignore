@@ -4,3 +4,4 @@
 *.rb~
 *.erb~
 *.css~
+/llInputWeb/public/input

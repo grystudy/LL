@@ -1,0 +1,36 @@
+
+<table>
+	<caption>限行数据</caption>
+	<thead> <!-- table head -->
+		<tr>
+			<th scope="rowgroup">序号</th>
+			<th scope="col">关联描述Id</th>
+			<th scope="col">行政code</th>
+			<th scope="col">车牌</th>
+			<th scope="col">归属地</th>
+			<th scope="col">登记限制</th>
+			<th scope="col">事件限行</th>
+			<th scope="col">规则类型</th>
+			<th scope="col">周末上班</th>
+			<th scope="col">节假日</th>
+			<th scope="col">英文规则</th>
+			<th scope="col">31号</th>
+			<th scope="col">限号</th>
+			<th scope="col">时段</th>
+			<th scope="col">有效期</th>
+			<th scope="col">区域</th>
+		</tr>
+	</thead>
+	<tbody> <!-- table body -->
+	
+	<% if $main_data %>
+		 <% $main_data.each do |data_item| %>
+		<tr>
+		 <% data_item.each do |field_item| %>
+			<td ><%= field_item%></th>
+			<% end%>
+		</tr>
+		<% end%>
+	<% end%>
+	</tbody>	
+</table>
