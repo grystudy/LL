@@ -1,9 +1,37 @@
 class HomeController < ApplicationController
-  def index
-  end
-
+  $mutex_main_data = Mutex.new 
   $main_data = []
+
+  $guishudi_hash = {"1"=> "本地" ,"2"=>"外地","3"=>"本地外地"}
+  $dengji_hash = {"1"=> "不限登记车" ,"2"=>"只限登记车","3"=>"所有车"}
+  $leixing_hash =  {"1"=> "日期" ,"2"=>"星期","3"=>"日期单双","4"=>"休息日单双","5"=>"开四停四"}
+  $yingwen_hash = {"0"=> "按0处理" ,"4"=>"按4处理","10"=>"末尾数字","11"=>"只限英文","-1"=>"不限英文"}
+  $shijian_hash = {"1"=> "否" ,"2"=>"是"} 
+  $truefalse_hash = {"0"=> "不限制" ,"1"=>"限制"} 
+  $hash_array = [nil,nil,nil,nil,$guishudi_hash,$dengji_hash,$shijian_hash,
+    $leixing_hash,$truefalse_hash,$truefalse_hash,
+    $yingwen_hash,$truefalse_hash,nil,nil,nil,nil]
+  DataArrayLength = 16  
+     
   def main
+    @data = []
+    data = $main_data
+	 return nil if !data || data.length == 0         
+    nd = []
+    data.each do |row|
+		 nr = []
+		 row.each_with_index do |field,i|
+       func_hash = $hash_array[i]
+        if func_hash
+          return nil if !func_hash.key?(field)
+          nr << func_hash[field]
+        else
+          nr << field
+        end
+		   end    
+     nd << nr     
+     end
+    @data = nd
   end
   
   def resetByFile
@@ -20,6 +48,11 @@ class HomeController < ApplicationController
       end
     end
   end
+
+  def edit
+    data = $main_data
+    # render html: "<strong>未找到该条限行，是不是另一个人正在删除它？</strong>".html_safe , layout: "application"
+  end
   
   private  
 
@@ -27,7 +60,7 @@ class HomeController < ApplicationController
     return nil if !data
     result = []
     data.each_with_index do |line,i|
-      return nil if !line || line.length!=16
+      return nil if !line || line.length != DataArrayLength
       result << convertLine(line)
     end
 
@@ -56,10 +89,13 @@ class HomeController < ApplicationController
       data_for_view = convertUI(data)
       return nil if !data_for_view || data_for_view.length == 0 
       data_for_view.shift
-      $main_data = data_for_view
     rescue 
       return nil
     end
+
+      $mutex_main_data.synchronize{
+      $main_data = data_for_view
+      }
 
     return nil if !data
     Write(File.join(dirName,"inputMainData.txt"),data)

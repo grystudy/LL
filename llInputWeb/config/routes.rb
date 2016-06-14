@@ -6,6 +6,6 @@ get 'home/resetByFile'
 post 'home/resetByFileComplete'
 get 'home/main'
 match 'home/resetByFileComplete' => 'home#index' , :via => :get
-
+get 'home/edit'
 root 'home#index'
 end
