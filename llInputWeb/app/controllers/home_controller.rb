@@ -50,12 +50,33 @@ class HomeController < ApplicationController
   end
 
   def edit
-    data = $main_data
-    # render html: "<strong>未找到该条限行，是不是另一个人正在删除它？</strong>".html_safe , layout: "application"
+    data = $main_data  
+  
+    id = params[:id]    
+    if !id || id == "-1"
+      new_item = []
+      # 新建一个
+      $mutex_main_data.synchronize{
+      data = $main_data
+      data = [] if !data
+      maxId = (data.length==0 ? 1 : (data.last.first.to_i +1)).to_s
+      data << new_item
+      $main_data = data
+      }
+      
+      new_item << maxId << "0" << "110000" << ""<< "1" << "3" << "1" <<"1"<<"0"<<"0"<<"0"<<"0"<<""<<""<<""
+      @item = new_item
+    else            
+      item = data.select{|i|i&&i.length>0&&i[0]&&i[0]==id}
+      if item&&item.length>0
+        @item = item[0]
+      else
+        render html: "<strong>未找到该条限行，是不是另一个人正在删除它？</strong>".html_safe , layout: "application"
+      end
+    end
   end
   
   private  
-
   def convertUI(data)
     return nil if !data
     result = []

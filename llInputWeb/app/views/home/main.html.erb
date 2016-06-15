@@ -18,7 +18,7 @@
 			<th scope="col">限号</th>
 			<th scope="col">时段</th>
 			<th scope="col">有效期</th>
-			<th scope="col">区域</th>
+			<th scope="col" style="text-align:left">区域</th>
 		</tr>
 	</thead>
 	<tbody> <!-- table body -->
@@ -30,7 +30,7 @@
 		 <% if i == 0 %>
 		   <td ><a href="/home/edit?id=<%= field_item%>"><%= field_item%></a></th>
 		 <% else %>
-		 			<td ><%= field_item%></th>
+		 			<td><%= field_item%></th>
 		 <%end%>
 			<% end%>
 		</tr>
