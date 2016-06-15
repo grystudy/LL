@@ -1,125 +1,95 @@
-<main class="wrapper" role="main">
-	<form method="post" action="show-data.php" enctype="multipart/form-data">
-		<!-- START ACCOUNT FIELDS -->
-		 <fieldset>
-			<h2 class="hdr-account">编辑限行项</h2>
+	<main class="wrapper" role="main">
+	<%i= 0%>
+	<%item= @item%>
+	<form method="post" action="edit_item" enctype="multipart/form-data">
+			<!-- START ACCOUNT FIELDS -->
+			<fieldset>
+				<h2 class="hdr-account">编辑限行项</h2>
 
-			<div class="fields">
-			   <%i= 0%>
-			    <%item= @item%>
-			    	<div class="row">
-					<label >序号 <%= item[i]%></label>
-				</div>
-					<%i= i+1%>
-				<div class="row">
-					<label for="mesIndex">关联描述Id:</label>
-					<input type="text" id="mesIndex" name="mesIndex" value = "<%= item[i]%>" class="field-large" required="required" aria-required="true" />
-				</div>
-				<%i= i+1%>
-				<div class="row">
-					<label for="city-code">城市Code:</label>
-					<input type="text" id="city-code" name="city_code" value = "<%= item[i]%>" class="field-large" required="required"/>
-				</div>
-					<%i= i+1%>
-				<div class="row">
-					<label for="chepai">车牌:</label>
-					<input type="text" id="chepai" name="chepai" value = "<%= item[i]%>" placeholder="例如: 赣A;赣M" class="field-large" />
-				</div>
-					<%i= i+1%>
-			   <div class="row">
-					<label for="guishudi">归属地:</label>
-					<select id="guishudi" name="guishudi" >
-					  <% $guishudi_hash.each do |key,value| %>
-                   <option value=  <%=key%> > <%=value%></option>
-                 <% end %>
-					</select>
-				</div>
-					<%i= i+1%>
-				<div class="row">
-					<label for="dengji">登记限制:</label>
-					<select id="dengji" name="dengji" >
-					  <% $dengji_hash.each do |key,value| %>
-                   <option value=  <%=key%> > <%=value%></option>
-                 <% end %>
-					</select>
-				</div>
+				<div class="fields">
+					<div class="row">
+						<label for="xuhao">序号:</label>
+						<input type="text" id="xuhao" name="xuhao" value = "<%= item[i]%>" class="field-large" readonly = "readonly" />
+					</div>
+					</div>
 					<%i= i+1%>
 					<div class="row">
-					<label for="shijian">事件限行:</label>
-					<select id="shijian" name="shijian" >
-					  <% $shijian_hash.each do |key,value| %>
-                   <option value=  <%=key%> > <%=value%></option>
-                 <% end %>
-					</select>
-				</div>
-					<%i= i+1%>
-				<div class="row">
-					<label for="leixing">规则类型:</label>
-					<select id="leixing" name="leixing" >
-					  <% $leixing_hash.each do |key,value| %>
-                   <option value=  <%=key%> > <%=value%></option>
-                 <% end %>
-					</select>
-				</div>
+						<label for="mesIndex">关联描述Id:</label>
+						<input type="text" id="mesIndex" name="mesIndex" value = "<%= item[i]%>" class="field-large" required="required" aria-required="true" />
+					</div>
 					<%i= i+1%>
 					<div class="row">
-					<label for="zhoumo">周末上班:</label>
-					<select id="zhoumo" name="zhoumo" >
-					  <% $truefalse_hash.each do |key,value| %>
-                   <option value=  <%=key%> > <%=value%></option>
-                 <% end %>
-					</select>
-				</div>
-					<%i= i+1%>
-				<div class="row">
-					<label for="jiejiari">节假日:</label>
-					<select id="jiejiari" name="jiejiari" >
-					  <% $truefalse_hash.each do |key,value| %>
-                   <option value=  <%=key%> > <%=value%></option>
-                 <% end %>
-					</select>
-				</div>
-					<%i= i+1%>
-            <div class="row">
-					<label for="yingwen">英文规则:</label>
-					<select id="yingwen" name="yingwen" >
-					  <% $yingwen_hash.each do |key,value| %>
-                   <option value=  <%=key%> > <%=value%></option>
-                 <% end %>
-					</select>
-				</div>
-					<%i= i+1%>
-				 <div class="row">
-					<label for="sanshiyi">31号:</label>
-					<select id="sanshiyi" name="sanshiyi" >
-					  <% $truefalse_hash.each do |key,value| %>
-                   <option value=  <%=key%> > <%=value%></option>
-                 <% end %>
-					</select>
-				</div>		
+						<label for="city-code">城市Code:</label>
+						<input type="text" id="city-code" name="city_code" value = "<%= item[i]%>" class="field-large" required="required"/>
+					</div>
 					<%i= i+1%>
 					<div class="row">
-					<label for="xianhao">限号:</label>
-					<input type="text" id="xianhao" name="xianhao" value = "<%= item[i]%>" class="field-large" placeholder= "例如: 1,6;2,7;3,8;4,9;5,0。-1为不限行"/>
-				</div>			
+						<label for="chepai">车牌:</label>
+						<input type="text" id="chepai" name="chepai" value = "<%= item[i]%>" placeholder="例如: 赣A;赣M" class="field-large" />
+					</div>
+					<%i= i+1%>
+					<div class="row">
+						<label for="guishudi">归属地:</label>
+						<%= select_tag(:guishudi, options_for_select($guishudi_hash.invert.to_a,item[i])) %>				
+					</div>
+					<%i= i+1%>
+					<div class="row">
+						<label for="dengji">登记限制:</label>
+						<%= select_tag(:dengji, options_for_select($dengji_hash.invert.to_a,item[i])) %>		
+					</div>
+					<%i= i+1%>
+					<div class="row">
+						<label for="shijian">事件限行:</label>
+						<%= select_tag(:shijian, options_for_select($shijian_hash.invert.to_a,item[i])) %>		
+					</div>
+					<%i= i+1%>
+					<div class="row">
+						<label for="leixing">规则类型:</label>
+						<%= select_tag(:leixing, options_for_select($leixing_hash.invert.to_a,item[i])) %>		
+					</div>
+					<%i= i+1%>
+					<div class="row">
+						<label for="zhoumo">周末上班:</label>
+						<%= select_tag(:zhoumo, options_for_select($truefalse_hash.invert.to_a,item[i])) %>		
+					</div>
+					<%i= i+1%>
+					<div class="row">
+						<label for="jiejiari">节假日:</label>
+						<%= select_tag(:jiejiari, options_for_select($truefalse_hash.invert.to_a,item[i])) %>		
+					</div>
+					<%i= i+1%>
+					<div class="row">
+						<label for="yingwen">英文规则:</label>
+						<%= select_tag(:yingwen, options_for_select($yingwen_hash.invert.to_a,item[i])) %>		
+					</div>
+					<%i= i+1%>
+					<div class="row">
+						<label for="sanshiyi">31号:</label>
+						<%= select_tag(:sanshiyi, options_for_select($truefalse_hash.invert.to_a,item[i])) %>		
+					</div>		
+					<%i= i+1%>
+					<div class="row">
+						<label for="xianhao">限号:</label>
+						<input type="text" id="xianhao" name="xianhao" value = "<%= item[i]%>" class="field-large" placeholder= "例如: 1,6;2,7;3,8;4,9;5,0。-1为不限行"/>
+					</div>			
 					<%i= i+1%>	
 					<div class="row">
-					<label for="time">时段:</label>
-					<input type="text" id="time" name="time" value = "<%= item[i]%>" class="field-large" placeholder= "例如: 07:00-09:00;16:30-18:30"/>
-				</div>
+						<label for="time">时段:</label>
+						<input type="text" id="time" name="time" value = "<%= item[i]%>" class="field-large" placeholder= "例如: 07:00-09:00;16:30-18:30"/>
+					</div>
 					<%i= i+1%>
-				<div class="row">
-					<label for="date">有效期:</label>
-					<input type="text" id="date" name="date" value = "<%= item[i]%>" class="field-large" placeholder= "例如: 20160601-20160710"/>
-				</div>
+					<div class="row">
+						<label for="date">有效期:</label>
+						<input type="text" id="date" name="date" value = "<%= item[i]%>" class="field-large" placeholder= "例如: 20160601-20160710"/>
+					</div>
 					<%i= i+1%>
-				<div class="row">
-					<label for="time">区域:</label>
-					<textarea id="quyu" name="quyu" cols="40" rows="5" class="field-large"><%= item[i]%></textarea>
+					<div class="row">
+						<label for="time">区域:</label>
+						<textarea id="quyu" name="quyu" cols="40" rows="5" class="field-large"><%= item[i]%></textarea>
+					</div>
 				</div>
-			</div>
-		</fieldset>
-		
+			</fieldset>
+
 			<!--
 		<fieldset>
 			<h2 class="hdr-public-profile">Public Profile</h2>
@@ -138,8 +108,8 @@
 				
 			</div>
 		</fieldset>
-      -->
-		
-		<input type="submit" value="完成" class="btn" />
-	</form>
+	-->
+
+	<input type="submit" value="完成" class="btn" />
+</form>
 </main>

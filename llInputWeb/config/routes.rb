@@ -5,7 +5,9 @@ Rails.application.routes.draw do
 get 'home/resetByFile'
 post 'home/resetByFileComplete'
 get 'home/main'
-match 'home/resetByFileComplete' => 'home#index' , :via => :get
+match 'home/resetByFileComplete' => 'home#main' , :via => :get
 get 'home/edit'
+post 'home/edit_item'
+match 'home/edit_item' => 'home#main' , :via => :get
 root 'home#index'
 end
