@@ -9,5 +9,6 @@ match 'home/resetByFileComplete' => 'home#main' , :via => :get
 get 'home/edit'
 post 'home/edit_item'
 match 'home/edit_item' => 'home#main' , :via => :get
+get 'home/download'
 root 'home#index'
 end

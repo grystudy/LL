@@ -1,5 +1,6 @@
 class HomeController < ApplicationController
 	$mutex_main_data = Mutex.new 
+	$mutex_file = Mutex.new
 	$main_data = []
 
 	$guishudi_hash = {"1"=> "本地" ,"2"=>"外地","3"=>"本地外地"}
@@ -74,7 +75,7 @@ class HomeController < ApplicationController
    	if del
    		$mutex_main_data.synchronize{
    			$main_data.reject!{|itemT|itemT&&itemT.length>0&&itemT.first==xuhao}
-   			}
+   		}
    		render html: "<strong>序号: #{xuhao} 删除成功！</strong>".html_safe , layout: "application"
    	else
    		mesIndex = params[:mesIndex]
@@ -98,6 +99,29 @@ class HomeController < ApplicationController
    		}
    		render html: "<strong>序号: #{xuhao} 提交成功！</strong>".html_safe , layout: "application"
    	end
+   end
+
+   def download
+   	type = params[:file]
+   	if type
+   		dirName="#{Rails.root}/public/output" 
+   		data = $main_data
+   		if type=="main" && data && data.length>0
+   			file_name = File.join(dirName,"outputMainData.txt")
+   			$mutex_file.synchronize{
+   				Write(file_name,data)
+   				io = File.open(file_name)
+   				io.binmode
+   				send_data(io.read,:filename => "限行规则导出.txt",:disposition => 'attachment')
+   				io.close
+   			}
+   			
+   			# redirect_to(:action => 'main')  
+   			return
+   		end
+   	end
+
+   	render html: "<strong>没有可导出的数据</strong>".html_safe , layout: "application"      
    end
 
    private  
@@ -132,14 +156,10 @@ def convertUI(data)
 	result = []
 	data.each_with_index do |line,i|
 		return nil if !line || line.length != DataArrayLength
-		result << convertLine(line)
+		result << line
 	end
 
 	result
-end
-
-def convertLine(line)
-	line
 end
 
 def uploadFile(file)
@@ -153,10 +173,13 @@ def uploadFile(file)
 
 		begin
 			temp_path = File.join(dirName,request.remote_ip()+"_inputMainDataTemp.txt")
-			File.open(temp_path, "wb") do |f|
-				f.write(file.read)
-			end
-			data = Read(temp_path)
+			data = []
+			$mutex_file.synchronize{
+				File.open(temp_path, "wb") do |f|
+					f.write(file.read)
+				end
+				data = Read(temp_path)
+			}
 			data_for_view = convertUI(data)
 			return nil if !data_for_view || data_for_view.length == 0 
 			data_for_view.shift
@@ -169,8 +192,9 @@ def uploadFile(file)
 		}
 
 		return nil if !data
-		Write(File.join(dirName,"inputMainData.txt"),data)
-
+		$mutex_file.synchronize{
+			Write(File.join(dirName,"inputMainData.txt"),data)
+		}
 		return data
 	else
 		return nil
@@ -190,7 +214,7 @@ def Read(fileName)
 		lines
 	end
 end
-
+SpecialChar = "×"
 def Write(fileName, data)
 	return if !data
 
@@ -201,11 +225,12 @@ def Write(fileName, data)
 
 	File.open(fileName, "w", :encoding => 'UTF-8') do |io|
 		data.each_with_index do |line,i|
-			io.write line.join(Tab)
+			line_str = line.join(Tab).gsub(/\n/,SpecialChar)
+			io.write line_str
 			if i != data.count - 1            
 				io.write(New_Line)
 			end
 		end
 	end
-end 
+end
 end

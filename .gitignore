@@ -5,4 +5,5 @@
 *.erb~
 *.css~
 /llInputWeb/public/input
+/llInputWeb/public/output
 
