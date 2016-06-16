@@ -40,7 +40,7 @@ class HomeController < ApplicationController
 		unless request.get?
 			file_input = params[:fileMain]
 			return if !file_input
-			if uploadFile(file_input)
+			if   readMainData(uploadFile(file_input))
 				render  layout: "application" ,inline: "<p>#{file_input.original_filename} 上传成功</p>"
 			else
 				render  layout: "application" ,inline: "<p>#{file_input.original_filename} 上传失败</p>"
@@ -93,9 +93,16 @@ class HomeController < ApplicationController
    		time = params[:time]
    		date = params[:date]
    		quyu = params[:quyu]
+
+   		fn = params[:fn]
+   		if item[16]!=fn && fn && !fn.blank?
+    		pic = params[:picture]
+    		uploadFile(pic) if pic
+    				end
+		fn = "" if !fn
    		$mutex_main_data.synchronize{
    			item.clear
-   			item <<xuhao<< mesIndex << city_code<<chepai<<guishudi<<dengji<<shijian<<leixing<<zhoumo<<jiejiari<<yingwen<<sanshiyi<<xianhao<<time<<date<<quyu      
+   			item <<xuhao<< mesIndex << city_code<<chepai<<guishudi<<dengji<<shijian<<leixing<<zhoumo<<jiejiari<<yingwen<<sanshiyi<<xianhao<<time<<date<<quyu<<fn      
    		}
    		render html: "<strong>序号: #{xuhao} 提交成功！</strong>".html_safe , layout: "application"
    	end
@@ -114,10 +121,8 @@ class HomeController < ApplicationController
    				io.binmode
    				send_data(io.read,:filename => "限行规则导出.txt",:disposition => 'attachment')
    				io.close
-   			}
-   			
-   			# redirect_to(:action => 'main')  
-   			return
+   			}   			
+   			   			return
    		end
    	end
 
@@ -137,7 +142,7 @@ class HomeController < ApplicationController
       	data << new_item
       	$main_data = data
 
-      	new_item << maxId << "0" << "110000" << ""<< "1" << "3" << "1" <<"1"<<"0"<<"0"<<"0"<<"0"<<""<<""<<""<<""
+      	new_item << maxId << "0" << "110000" << ""<< "1" << "3" << "1" <<"1"<<"0"<<"0"<<"0"<<"0"<<""<<""<<""<<""<<""
       }     
       return new_item
   else            
@@ -155,11 +160,34 @@ def convertUI(data)
 	return nil if !data
 	result = []
 	data.each_with_index do |line,i|
-		return nil if !line || line.length != DataArrayLength
+		return nil if !line
+		if  line.length == DataArrayLength+1
+		elsif line.length != DataArrayLength
+			return nil
+		else 
+			line << ""
+		end
 		result << line
 	end
 
 	result
+end
+
+def readMainData(temp_path)
+	return nil if !temp_path 
+    begin
+	   data = []
+        $mutex_file.synchronize{				
+				data = Read(temp_path)			
+			data_for_view = convertUI(data)
+			return nil if !data_for_view || data_for_view.length == 0 
+			data_for_view.shift
+			$main_data = data_for_view		
+		    		}
+		return data
+	rescue 
+			return nil
+	end
 end
 
 def uploadFile(file)
@@ -172,30 +200,17 @@ def uploadFile(file)
 		end
 
 		begin
-			temp_path = File.join(dirName,request.remote_ip()+"_inputMainDataTemp.txt")
-			data = []
+			temp_path = File.join(dirName,request.remote_ip()+file.original_filename)
+			
 			$mutex_file.synchronize{
 				File.open(temp_path, "wb") do |f|
 					f.write(file.read)
-				end
-				data = Read(temp_path)
-			}
-			data_for_view = convertUI(data)
-			return nil if !data_for_view || data_for_view.length == 0 
-			data_for_view.shift
+				end				
+			}			
 		rescue 
 			return nil
 		end
-
-		$mutex_main_data.synchronize{
-			$main_data = data_for_view
-		}
-
-		return nil if !data
-		$mutex_file.synchronize{
-			Write(File.join(dirName,"inputMainData.txt"),data)
-		}
-		return data
+		return temp_path
 	else
 		return nil
 	end
@@ -203,6 +218,7 @@ end
 
 Tab="\t"
 New_Line="\n"
+SpecialChar = "×"
 
 def Read(fileName)
 	File.open(fileName,"r", :encoding => 'UTF-8') do |io|
@@ -214,7 +230,7 @@ def Read(fileName)
 		lines
 	end
 end
-SpecialChar = "×"
+
 def Write(fileName, data)
 	return if !data
 

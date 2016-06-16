@@ -91,26 +91,59 @@
 			</div>
 		</fieldset>
 
-			<!--
-		<fieldset>
-			<h2 class="hdr-public-profile">Public Profile</h2>
-
-			<div class="fields">
-				<div class="row">
-					<label for="picture">Picture:</label>
-					<input type="file" id="picture" name="picture" />
-					<p class="instructions">Maximum size of 700k. JPG, GIF or PNG.</p>
-				</div>
 			
+		<fieldset>
+			<h2 class="hdr-public-profile">图片信息</h2>
+
+			<div class="fields">						
 				<p class="row">
-					<label for="bio">Bio:</label>
-					<textarea id="bio" name="bio" cols="40" rows="5" class="field-large"></textarea>
+					<label for="fn">文件:</label>
+					<input id="fn" name="fn" cols="40" rows="5" value = "<%= i=i+1;item[i]%>" class="field-large" readonly = "readonly" ></input>
+					<button type="button"  id="btnClear" onclick="clearInputFile()">清空</button>
 				</p>
-				
+				<div class="row">
+					<label for="picture">区域图片:</label>
+					<input type="file" id="picture" name="picture" onchange="fileChanged()" />
+					<p class="instructions">文件不应超过 700k. JPG, GIF or PNG.</p>
+				</div>
 			</div>
 		</fieldset>
-	-->
+	
 
 	<input type="submit" value="完成" class="btn" />
+
+	<script type="text/javascript">
+var fn = document.getElementById("fn");
+var file = document.getElementById("picture");
+function clear1() {
+// for IE, Opera, Safari, Chrome
+if (file.outerHTML) {
+file.outerHTML = file.outerHTML;
+} else { // FF(包括3.5)
+file.value = "";
+}
+}
+function fileChanged(){
+
+	fn.value = file.value
+}
+
+    function clearInputFile(){
+    	var f = file
+    	fn.value = ""
+        if(f.value){
+            try{
+                f.value = ''; //for IE11, latest Chrome/Firefox/Opera...
+            }catch(err){
+            }
+            if(f.value){ //for IE5 ~ IE10
+                var form = document.createElement('form'), ref = f.nextSibling;
+                form.appendChild(f);
+                form.reset();
+                ref.parentNode.insertBefore(f,ref);
+            }
+        }
+    }
+</script> 
 </form>
 </main>
