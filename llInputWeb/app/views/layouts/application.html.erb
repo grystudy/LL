@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	 <title>限行规则录入</title>
+	<title>限行规则录入</title>
 	<%= csrf_meta_tags %>
 	<%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
 	<%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
@@ -13,23 +13,22 @@
 		<nav role="navigation">
 			<ul class="nav">
 				<li><a href="/home/index">首页</a></li>
-				<li><a href="/home/main">规则编辑</a>
+				<li><a href="/home/main">普通限行</a>
 					<ul class="submenu">
 						<li><a href="/home/main">编辑</a></li>
+						<li><a href="/home/edit?id=-1">创建</a></li>
 						<li><a href="/home/resetByFile/">导入数据</a></li>
 					</ul>
 				</li>
-				<li><a href="/home/resetByFile/">导入/导出</a>
+				<li><a href="/home/main/">事件限行</a>
 					<ul class="submenu">
-						
-						<li><a href="/support/contact-us.html">Contact Us</a></li>
-						<li><a href="/support/how-to-guides.html">How-to Guides</a></li>				
+							
 					</ul>
 				</li>
 				<li>链接
 					<ul class="submenu">
-						<li><a href="http://120.27.94.60:3001/rlquery/index" rel ="external" target ="限行查询">限行查询网站</a></li>
-						
+						<li><a href="http://120.27.94.60:3001/rlquery/index" rel ="external" target ="限行查询">内部查询网站</a></li>
+						<li><a href="http://www.xianxingweihao.com/" rel ="external" target ="限行查询">其他查询网站</a></li>
 					</ul>
 				</li>
 			</ul><!-- end ul with class="nav" -->
