@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
- # get 'home/index'
+scope(:path => '/llweb') do 
+# get 'home/index'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 get 'home/resetByFile'
@@ -12,4 +13,5 @@ match 'home/edit_item' => 'home#main' , :via => :get
 match 'home/index' => 'home#main' , :via => :get
 get 'home/download'
 root 'home#index'
+end
 end
