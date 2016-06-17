@@ -36,11 +36,14 @@ class HomeController < ApplicationController
 	def resetByFile
 	end  
 
+	MainData = "MainData"
+	Picture = "Picture"
+
 	def resetByFileComplete
 		unless request.get?
 			file_input = params[:fileMain]
 			return if !file_input
-			if   readMainData(uploadFile(file_input))
+			if   readMainData(uploadFile(file_input,MainData,true))
 				render  layout: "application" ,inline: "<p>#{file_input.original_filename} 上传成功</p>"
 			else
 				render  layout: "application" ,inline: "<p>#{file_input.original_filename} 上传失败</p>"
@@ -96,10 +99,10 @@ class HomeController < ApplicationController
 
    		fn = params[:fn]
    		if item[16]!=fn && fn && !fn.blank?
-    		pic = params[:picture]
-    		uploadFile(pic) if pic
-    				end
-		fn = "" if !fn
+   			pic = params[:picture]
+   			uploadFile(pic,Picture,false) if pic
+   		end
+   		fn = "" if !fn
    		$mutex_main_data.synchronize{
    			item.clear
    			item <<xuhao<< mesIndex << city_code<<chepai<<guishudi<<dengji<<shijian<<leixing<<zhoumo<<jiejiari<<yingwen<<sanshiyi<<xianhao<<time<<date<<quyu<<fn      
@@ -108,22 +111,38 @@ class HomeController < ApplicationController
    	end
    end
 
+   def sendFile(file_name,displayName) 
+   	$mutex_file.synchronize{   				
+   		io = File.open(file_name)
+   		io.binmode
+   		send_data(io.read,:filename => displayName,:disposition => 'attachment')
+   		io.close
+   	}   			
+   end
+
    def download
    	type = params[:file]
    	if type
-   		dirName="#{Rails.root}/public/output" 
-   		data = $main_data
-   		if type=="main" && data && data.length>0
-   			file_name = File.join(dirName,"outputMainData.txt")
-   			$mutex_file.synchronize{
-   				Write(file_name,data)
-   				io = File.open(file_name)
-   				io.binmode
-   				send_data(io.read,:filename => "限行规则导出.txt",:disposition => 'attachment')
-   				io.close
-   			}   			
-   			   			return
-   		end
+   		dirName="#{Rails.root}/public/output"   		
+   		if type=="main"
+   			data = $main_data
+   			if data && data.length>0
+   				file_name = File.join(dirName,"outputMainData.txt") 
+   				ensureDir(dirName)  
+   				Write(file_name,data)	
+   				sendFile(file_name,"限行规则导出.txt")
+   				return
+   			end		
+   		elsif type =="picture"
+   			sourceDir = File.join("public/input",Picture)
+   			file_name = File.join(dirName,"pictures.zip")
+   			ensureDir(dirName) 
+   			if File.directory?(sourceDir)  
+   				compress(sourceDir,file_name)
+   				sendFile(file_name,"限行图片导出.zip")
+   				return
+   			end
+   		end   		
    	end
 
    	render html: "<strong>没有可导出的数据</strong>".html_safe , layout: "application"      
@@ -169,39 +188,38 @@ def convertUI(data)
 		end
 		result << line
 	end
-
 	result
 end
 
 def readMainData(temp_path)
 	return nil if !temp_path 
-    begin
-	   data = []
-        $mutex_file.synchronize{				
-				data = Read(temp_path)			
+	begin
+		data = []
+		$mutex_file.synchronize{				
+			data = Read(temp_path)			
 			data_for_view = convertUI(data)
 			return nil if !data_for_view || data_for_view.length == 0 
 			data_for_view.shift
 			$main_data = data_for_view		
-		    		}
+		}
 		return data
 	rescue 
-			return nil
+		return nil
 	end
 end
 
-def uploadFile(file)
+def uploadFile(file,dirN,bAddIp)
 	if !file.original_filename.empty?
 
 		dirName="#{Rails.root}/public/input" 
-
-		if(!File.directory?(dirName))
-			Dir.mkdir(dirName)
+		ensureDir(dirName)
+		if dirN
+			dirName = File.join(dirName,dirN)
+			ensureDir(dirName)
 		end
-
 		begin
-			temp_path = File.join(dirName,request.remote_ip()+file.original_filename)
-			
+			file_name = bAddIp ? request.remote_ip()+file.original_filename : file.original_filename
+			temp_path = File.join(dirName,file_name)
 			$mutex_file.synchronize{
 				File.open(temp_path, "wb") do |f|
 					f.write(file.read)
@@ -235,9 +253,7 @@ def Write(fileName, data)
 	return if !data
 
 	dirName=File.dirname(fileName)      
-	if(!File.directory?(dirName))
-		Dir.mkdir(File.dirname(fileName))
-	end
+	ensureDir(dirName)
 
 	File.open(fileName, "w", :encoding => 'UTF-8') do |io|
 		data.each_with_index do |line,i|
@@ -249,4 +265,37 @@ def Write(fileName, data)
 		end
 	end
 end
+
+def ensureDir(dirName)
+	if(!File.directory?(dirName))
+		Dir.mkdir(dirName)
+	end
+end
+
+require 'rubygems'  
+require 'zip/zipfilesystem'  
+def compress(source,target)
+	begin
+		Zip::ZipFile.open target, Zip::ZipFile::CREATE do |zip|  
+			Dir.foreach(source) do |sub_file_name|  
+				tar = "#{source}/#{sub_file_name}"
+				zip.add(sub_file_name,tar) unless sub_file_name == '.' or sub_file_name == '..' 
+			end  
+
+		# add_file_to_zip(source, zip)  
+	end  
+  rescue Zip::ZipEntryExistsError
+	return
+  end
+end  
+
+def add_file_to_zip(file_path, zip)  
+	if File.directory?(file_path)  
+		Dir.foreach(file_path) do |sub_file_name|  
+			add_file_to_zip("#{file_path}/#{sub_file_name}", zip) unless sub_file_name == '.' or sub_file_name == '..'  
+		end  
+	else  
+		zip.add(file_path, file_path)  
+	end  
+end  
 end
