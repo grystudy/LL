@@ -1,3 +1,5 @@
+
+
 class HomeController < ApplicationController
 	$mutex_main_data = Mutex.new 
 	$mutex_file = Mutex.new
@@ -11,7 +13,7 @@ class HomeController < ApplicationController
 	$truefalse_hash = {"0"=> "不限制" ,"1"=>"限制"} 
 	$hash_array = [nil,nil,nil,nil,$guishudi_hash,$dengji_hash,$shijian_hash,$leixing_hash,$truefalse_hash,$truefalse_hash,$yingwen_hash,$truefalse_hash,nil,nil,nil,nil]
 	DataArrayLength = 16  
-
+require 'FileHelper.rb'
 	def main
 		@data = []
 		data = $main_data
@@ -38,12 +40,16 @@ class HomeController < ApplicationController
 
 	MainData = "MainData"
 	Picture = "Picture"
-
+ 
 	def resetByFileComplete
 		unless request.get?
 			file_input = params[:fileMain]
 			return if !file_input
-			if   readMainData(uploadFile(file_input,MainData,true))
+			main_data = try_save_and_parse_data(file_input,MainData,request.remote_ip(),$mutex_file,DataArrayLength)
+			if  main_data
+				$mutex_main_data.synchronize{
+					$main_data = main_data
+				}
 				render  layout: "application" ,inline: "<p>#{file_input.original_filename} 上传成功</p>"
 			else
 				render  layout: "application" ,inline: "<p>#{file_input.original_filename} 上传失败</p>"
@@ -152,7 +158,7 @@ class HomeController < ApplicationController
    end
 
    private  
-   require 'FileHelper.rb'
+  
    def search_by_id(id)
    	return nil if !id 
    	if !id || id == "-1"
@@ -179,13 +185,30 @@ class HomeController < ApplicationController
   end       
 end
 
-def convertUI(data)
+def try_save_and_parse_data(file,dirN,bAddIp,mutex,length_for_check)
+	temp_path = uploadFile(file,dirN,bAddIp,mutex)
+	return nil if !temp_path 
+	begin
+		data = []
+		mutex.synchronize{				
+			data = Read(temp_path)			
+			data = ensure_data(data,length_for_check)
+			return nil if !data || data.length == 0 
+			data.shift
+		}
+		return data
+	rescue 
+		return nil
+	end
+end
+
+def ensure_data(data,length_for_check)
 	return nil if !data
 	result = []
 	data.each_with_index do |line,i|
 		return nil if !line
-		if  line.length == DataArrayLength+1
-		elsif line.length != DataArrayLength
+		if  line.length == length_for_check+1
+		elsif line.length != length_for_check
 			return nil
 		else 
 			line << ""
@@ -195,29 +218,12 @@ def convertUI(data)
 	result
 end
 
-def readMainData(temp_path)
-	return nil if !temp_path 
-	begin
-		data = []
-		$mutex_file.synchronize{				
-			data = Read(temp_path)			
-			data_for_view = convertUI(data)
-			return nil if !data_for_view || data_for_view.length == 0 
-			data_for_view.shift
-			$main_data = data_for_view		
-		}
-		return data
-	rescue 
-		return nil
-	end
-end
-
-def uploadFile(file,dirN,bAddIp)
+def uploadFile(file,dirN,bAddIp,mutex)
 	if !file.original_filename.empty?
 
 		dirName="#{Rails.root}/public/input" 
 
-		$mutex_file.synchronize{
+		mutex.synchronize{
 			ensureDir(dirName)
 			if dirN
 				dirName = File.join(dirName,dirN)
@@ -225,9 +231,9 @@ def uploadFile(file,dirN,bAddIp)
 			end
 		}
 		begin
-			file_name = bAddIp ? request.remote_ip()+file.original_filename : file.original_filename
+			file_name = bAddIp ? bAddIp+file.original_filename : file.original_filename
 			temp_path = File.join(dirName,file_name)
-			$mutex_file.synchronize{
+			mutex.synchronize{
 				File.open(temp_path, "wb") do |f|
 					f.write(file.read)
 				end				
@@ -241,3 +247,4 @@ def uploadFile(file,dirN,bAddIp)
 	end
 end
 end
+
