@@ -37,12 +37,14 @@ def ensureDir(dirName)
 end
 
 require 'pathname'
-require 'rubygems'  
-require 'zip/zipfilesystem'  
+# require 'rubygems'  
+# require 'zip/zipfilesystem'  
+gem 'rubyzip'  
+ require 'zip' 
 
 def compress(source,target)
 	# begin
-	Zip::ZipFile.open target, Zip::ZipFile::CREATE do |zip|  
+	Zip::File.open target, Zip::File::CREATE do |zip|  
 		add_file_to_zip(source, zip,Pathname.new(source).basename)  
 	end  
  #  rescue Zip::ZipEntryExistsError
