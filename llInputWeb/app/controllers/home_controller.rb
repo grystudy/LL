@@ -13,7 +13,7 @@ class HomeController < ApplicationController
 	$truefalse_hash = {"0"=> "不限制" ,"1"=>"限制"} 
 	$hash_array = [nil,nil,nil,nil,$guishudi_hash,$dengji_hash,$shijian_hash,$leixing_hash,$truefalse_hash,$truefalse_hash,$yingwen_hash,$truefalse_hash,nil,nil,nil,nil]
 	DataArrayLength = 16  
-require 'FileHelper.rb'
+
 	def main
 		@data = []
 		data = $main_data
@@ -41,7 +41,7 @@ require 'FileHelper.rb'
 	MainData = "MainData"
 	Picture = "Picture"
  
-	def resetByFileComplete
+	def import
 		unless request.get?
 			file_input = params[:fileMain]
 			return if !file_input
@@ -67,7 +67,7 @@ require 'FileHelper.rb'
 		end
 	end
 
-	protect_from_forgery :except => :edit_item  
+   protect_from_forgery :except => :edit_item  
 
    # you can disable csrf protection on controller-by-controller basis:  
    skip_before_filter :verify_authenticity_token    
@@ -106,7 +106,7 @@ require 'FileHelper.rb'
    		fn = params[:fn]
    		if item[16]!=fn && fn && !fn.blank?
    			pic = params[:picture]
-   			uploadFile(pic,Picture,false) if pic
+   			uploadFile(pic,Picture,nil,$mutex_file) if pic
    		end
    		fn = "" if !fn
    		$mutex_main_data.synchronize{
@@ -115,13 +115,6 @@ require 'FileHelper.rb'
    		}
    		render html: "<strong>序号: #{xuhao} 提交成功！</strong>".html_safe , layout: "application"
    	end
-   end
-
-   def sendFile(file_name,displayName)    	
-   	io = File.open(file_name)
-   	io.binmode
-   	send_data(io.read,:filename => displayName,:disposition => 'attachment')
-   	io.close   		
    end
 
    def download
@@ -157,8 +150,8 @@ require 'FileHelper.rb'
    	render html: "<strong>没有可导出的数据</strong>".html_safe , layout: "application"      
    end
 
-   private  
-  
+   private    
+   require 'FileHelper.rb'
    def search_by_id(id)
    	return nil if !id 
    	if !id || id == "-1"
@@ -183,68 +176,6 @@ require 'FileHelper.rb'
   		return nil
   	end
   end       
-end
-
-def try_save_and_parse_data(file,dirN,bAddIp,mutex,length_for_check)
-	temp_path = uploadFile(file,dirN,bAddIp,mutex)
-	return nil if !temp_path 
-	begin
-		data = []
-		mutex.synchronize{				
-			data = Read(temp_path)			
-			data = ensure_data(data,length_for_check)
-			return nil if !data || data.length == 0 
-			data.shift
-		}
-		return data
-	rescue 
-		return nil
-	end
-end
-
-def ensure_data(data,length_for_check)
-	return nil if !data
-	result = []
-	data.each_with_index do |line,i|
-		return nil if !line
-		if  line.length == length_for_check+1
-		elsif line.length != length_for_check
-			return nil
-		else 
-			line << ""
-		end
-		result << line
-	end
-	result
-end
-
-def uploadFile(file,dirN,bAddIp,mutex)
-	if !file.original_filename.empty?
-
-		dirName="#{Rails.root}/public/input" 
-
-		mutex.synchronize{
-			ensureDir(dirName)
-			if dirN
-				dirName = File.join(dirName,dirN)
-				ensureDir(dirName)
-			end
-		}
-		begin
-			file_name = bAddIp ? bAddIp+file.original_filename : file.original_filename
-			temp_path = File.join(dirName,file_name)
-			mutex.synchronize{
-				File.open(temp_path, "wb") do |f|
-					f.write(file.read)
-				end				
-			}			
-		rescue 
-			return nil
-		end
-		return temp_path
-	else
-		return nil
-	end
 end
 end
 

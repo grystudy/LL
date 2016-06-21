@@ -4,9 +4,9 @@ scope(:path => '/llweb') do
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 get 'home/resetByFile'
-post 'home/resetByFileComplete'
+post 'home/import'
 get 'home/main'
-match 'home/resetByFileComplete' => 'home#main' , :via => :get
+match 'home/import' => 'home#main' , :via => :get
 get 'home/edit'
 post 'home/edit_item'
 match 'home/edit_item' => 'home#main' , :via => :get

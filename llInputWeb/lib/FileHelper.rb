@@ -2,7 +2,12 @@ Tab="\t"
 New_Line="\n"
 SpecialChar = "×"
 
+require 'ExcelHelper.rb'
+$my_log = Logger.new("/home/yy/myGit/LL/llInputWeb/log/readfile.log")
 def Read(fileName)
+	return nil if !fileName
+	ext = File.extname(fileName)
+	return read_xlsx(fileName) if ext && ext.include?(".xlsx")
 	File.open(fileName,"r", :encoding => 'UTF-8') do |io|
 		lines=[]
 		io.each do |line|
@@ -35,6 +40,74 @@ def ensureDir(dirName)
 		Dir.mkdir(dirName)	
 	end
 end
+
+def try_save_and_parse_data(file,dirN,bAddIp,mutex,length_for_check)
+	temp_path = uploadFile(file,dirN,bAddIp,mutex)
+	return nil if !temp_path 
+	# begin
+		data = []
+		mutex.synchronize{				
+			data = Read(temp_path)	
+			data = ensure_data(data,length_for_check)
+			return nil if !data || data.length == 0 
+			data.shift
+		}
+		return data
+	# rescue 
+	# 	return nil
+	# end
+end
+
+def ensure_data(data,length_for_check)
+	return nil if !data
+	result = []
+	data.each_with_index do |line,i|
+		return nil if !line
+		if  line.length == length_for_check+1
+		elsif line.length != length_for_check
+			return nil
+		else 
+			line << ""
+		end
+		result << line
+	end
+	result
+end
+
+def uploadFile(file,dirN,bAddIp,mutex)
+	if !file.original_filename.empty?
+		dirName="#{Rails.root}/public/input" 
+		mutex.synchronize{
+			ensureDir(dirName)
+			if dirN
+				dirName = File.join(dirName,dirN)
+				ensureDir(dirName)
+			end
+		}
+		begin
+			file_name = bAddIp ? bAddIp+file.original_filename : file.original_filename
+			temp_path = File.join(dirName,file_name)
+			mutex.synchronize{
+				File.open(temp_path, "wb") do |f|
+					f.write(file.read)
+				end				
+			}			
+		rescue 
+			return nil
+		end
+		return temp_path
+	else
+		return nil
+	end
+end
+
+   def sendFile(file_name,displayName)    	
+   	io = File.open(file_name)
+   	io.binmode
+   	send_data(io.read,:filename => displayName,:disposition => 'attachment')
+   	io.close   		
+   end
+
 
 require 'pathname'
 # require 'rubygems'  
