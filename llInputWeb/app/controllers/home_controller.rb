@@ -111,13 +111,11 @@ class HomeController < ApplicationController
    	end
    end
 
-   def sendFile(file_name,displayName) 
-   	$mutex_file.synchronize{   				
-   		io = File.open(file_name)
-   		io.binmode
-   		send_data(io.read,:filename => displayName,:disposition => 'attachment')
-   		io.close
-   	}   			
+   def sendFile(file_name,displayName)    	
+   	io = File.open(file_name)
+   	io.binmode
+   	send_data(io.read,:filename => displayName,:disposition => 'attachment')
+   	io.close   		
    end
 
    def download
@@ -128,18 +126,23 @@ class HomeController < ApplicationController
    			data = $main_data
    			if data && data.length>0
    				file_name = File.join(dirName,"outputMainData.txt") 
-   				ensureDir(dirName)  
-   				Write(file_name,data)	
-   				sendFile(file_name,"限行规则导出.txt")
+   				$mutex_file.synchronize{  
+   					ensureDir(dirName)   	
+   					Write(file_name,data)
+   					sendFile(file_name,"限行规则导出.txt")	
+   				}
    				return
    			end		
    		elsif type =="picture"
    			sourceDir = File.join("public/input",Picture)
    			file_name = File.join(dirName,"pictures.zip")
-   			ensureDir(dirName) 
    			if File.directory?(sourceDir)  
-   				compress(sourceDir,file_name)
-   				sendFile(file_name,"限行图片导出.zip")
+   				$mutex_file.synchronize{   
+   					ensureDir(dirName) 
+   					File.delete(file_name) if File.exist?(file_name)	
+   					compress(sourceDir,file_name)
+   					sendFile(file_name,"限行图片导出.zip")
+   				}
    				return
    			end
    		end   		
@@ -149,6 +152,7 @@ class HomeController < ApplicationController
    end
 
    private  
+   require 'FileHelper.rb'
    def search_by_id(id)
    	return nil if !id 
    	if !id || id == "-1"
@@ -212,11 +216,14 @@ def uploadFile(file,dirN,bAddIp)
 	if !file.original_filename.empty?
 
 		dirName="#{Rails.root}/public/input" 
-		ensureDir(dirName)
-		if dirN
-			dirName = File.join(dirName,dirN)
+
+		$mutex_file.synchronize{
 			ensureDir(dirName)
-		end
+			if dirN
+				dirName = File.join(dirName,dirN)
+				ensureDir(dirName)
+			end
+		}
 		begin
 			file_name = bAddIp ? request.remote_ip()+file.original_filename : file.original_filename
 			temp_path = File.join(dirName,file_name)
@@ -233,69 +240,4 @@ def uploadFile(file,dirN,bAddIp)
 		return nil
 	end
 end
-
-Tab="\t"
-New_Line="\n"
-SpecialChar = "×"
-
-def Read(fileName)
-	File.open(fileName,"r", :encoding => 'UTF-8') do |io|
-		lines=[]
-		io.each do |line|
-			array = line.chomp.split(Tab)                            
-			lines << array
-		end
-		lines
-	end
-end
-
-def Write(fileName, data)
-	return if !data
-
-	dirName=File.dirname(fileName)      
-	ensureDir(dirName)
-
-	File.open(fileName, "w", :encoding => 'UTF-8') do |io|
-		data.each_with_index do |line,i|
-			line_str = line.join(Tab).gsub(/\n/,SpecialChar)
-			io.write line_str
-			if i != data.count - 1            
-				io.write(New_Line)
-			end
-		end
-	end
-end
-
-def ensureDir(dirName)
-	if(!File.directory?(dirName))
-		Dir.mkdir(dirName)
-	end
-end
-
-require 'rubygems'  
-require 'zip/zipfilesystem'  
-def compress(source,target)
-	begin
-		Zip::ZipFile.open target, Zip::ZipFile::CREATE do |zip|  
-			Dir.foreach(source) do |sub_file_name|  
-				tar = "#{source}/#{sub_file_name}"
-				zip.add(sub_file_name,tar) unless sub_file_name == '.' or sub_file_name == '..' 
-			end  
-
-		# add_file_to_zip(source, zip)  
-	end  
-  rescue Zip::ZipEntryExistsError
-	return
-  end
-end  
-
-def add_file_to_zip(file_path, zip)  
-	if File.directory?(file_path)  
-		Dir.foreach(file_path) do |sub_file_name|  
-			add_file_to_zip("#{file_path}/#{sub_file_name}", zip) unless sub_file_name == '.' or sub_file_name == '..'  
-		end  
-	else  
-		zip.add(file_path, file_path)  
-	end  
-end  
 end
