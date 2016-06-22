@@ -50,7 +50,7 @@ class HomeController < ApplicationController
 				$mutex_main_data.synchronize{
 					$main_data = main_data
 				}
-				render  layout: "application" ,inline: "<p>#{file_input.original_filename} 上传成功</p>"
+				render  layout: "application" ,inline: "<p>#{file_input.original_filename} 上传成功</p><%= link_to \"查看\",:action => \"main\" %>"
 			else
 				render  layout: "application" ,inline: "<p>#{file_input.original_filename} 上传失败</p>"
 			end
@@ -85,7 +85,7 @@ class HomeController < ApplicationController
    		$mutex_main_data.synchronize{
    			$main_data.reject!{|itemT|itemT&&itemT.length>0&&itemT.first==xuhao}
    		}
-   		render html: "<strong>序号: #{xuhao} 删除成功！</strong>".html_safe , layout: "application"
+   		render inline: "<strong>序号: #{xuhao} 删除成功！</strong><%= link_to \"查看\",:action => \"main\" %>".html_safe , layout: "application"
    	else
    		mesIndex = params[:mesIndex]
    		city_code = params[:city_code]
@@ -113,7 +113,7 @@ class HomeController < ApplicationController
    			item.clear
    			item <<xuhao<< mesIndex << city_code<<chepai<<guishudi<<dengji<<shijian<<leixing<<zhoumo<<jiejiari<<yingwen<<sanshiyi<<xianhao<<time<<date<<quyu<<fn      
    		}
-   		render html: "<strong>序号: #{xuhao} 提交成功！</strong>".html_safe , layout: "application"
+   		render inline: "<strong>序号: #{xuhao} 提交成功！</strong>　<%= link_to \"查看\",:action => \"main\" %>".html_safe , layout: "application"
    	end
    end
 

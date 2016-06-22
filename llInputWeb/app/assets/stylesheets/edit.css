@@ -34,6 +34,7 @@ fieldset {
 	margin-bottom: 12px;
 	overflow: hidden;
 	padding: 0 .625em; /* 10px/16px */
+	margin: 0;
 }
 
 .fields {
