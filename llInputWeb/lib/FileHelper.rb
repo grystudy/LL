@@ -3,7 +3,7 @@ New_Line="\n"
 SpecialChar = "×"
 
 require 'ExcelHelper.rb'
-$my_log = Logger.new("/home/yy/myGit/LL/llInputWeb/log/readfile.log")
+# $my_log = Logger.new("/home/yy/myGit/LL/llInputWeb/log/readfile.log")
 def Read(fileName)
 	return nil if !fileName
 	ext = File.extname(fileName)
@@ -19,7 +19,7 @@ def Read(fileName)
 end
 
 def Write(fileName, data)
-	return if !data
+	return false if !data
 
 	dirName=File.dirname(fileName)      
 	ensureDir(dirName)
@@ -33,6 +33,7 @@ def Write(fileName, data)
 			end
 		end
 	end
+	true
 end
 
 def ensureDir(dirName)
@@ -44,7 +45,7 @@ end
 def try_save_and_parse_data(file,dirN,bAddIp,mutex,length_for_check)
 	temp_path = uploadFile(file,dirN,bAddIp,mutex)
 	return nil if !temp_path 
-	# begin
+	begin
 		data = []
 		mutex.synchronize{				
 			data = Read(temp_path)	
@@ -53,9 +54,9 @@ def try_save_and_parse_data(file,dirN,bAddIp,mutex,length_for_check)
 			data.shift
 		}
 		return data
-	# rescue 
-	# 	return nil
-	# end
+	rescue 
+		return nil
+	end
 end
 
 def ensure_data(data,length_for_check)
@@ -101,28 +102,28 @@ def uploadFile(file,dirN,bAddIp,mutex)
 	end
 end
 
-   def sendFile(file_name,displayName)    	
-   	io = File.open(file_name)
-   	io.binmode
-   	send_data(io.read,:filename => displayName,:disposition => 'attachment')
-   	io.close   		
-   end
+def sendFile(file_name,displayName)    	
+	io = File.open(file_name)
+	io.binmode
+	send_data(io.read,:filename => displayName,:disposition => 'attachment')
+	io.close   		
+end
 
 
 require 'pathname'
 # require 'rubygems'  
 # require 'zip/zipfilesystem'  
 gem 'rubyzip'  
- require 'zip' 
+require 'zip' 
 
 def compress(source,target)
-	# begin
-	Zip::File.open target, Zip::File::CREATE do |zip|  
-		add_file_to_zip(source, zip,Pathname.new(source).basename)  
-	end  
- #  rescue Zip::ZipEntryExistsError
-	# return
- #  end
+	begin
+		Zip::File.open target, Zip::File::CREATE do |zip|  
+			add_file_to_zip(source, zip,Pathname.new(source).basename)  
+		end  
+	rescue Zip::ZipEntryExistsError
+		return
+	end
 end  
 
 def add_file_to_zip(file_path, zip,path_in_zip)  

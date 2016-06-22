@@ -40,7 +40,7 @@ class HomeController < ApplicationController
 
 	MainData = "MainData"
 	Picture = "Picture"
- 
+	
 	def import
 		unless request.get?
 			file_input = params[:fileMain]
@@ -67,7 +67,7 @@ class HomeController < ApplicationController
 		end
 	end
 
-   protect_from_forgery :except => :edit_item  
+	protect_from_forgery :except => :edit_item  
 
    # you can disable csrf protection on controller-by-controller basis:  
    skip_before_filter :verify_authenticity_token    
@@ -124,11 +124,19 @@ class HomeController < ApplicationController
    		if type=="main"
    			data = $main_data
    			if data && data.length>0
-   				file_name = File.join(dirName,"outputMainData.txt") 
+   				file_name =  File.join(dirName,"outputMainData.xlsx")
+   				File.delete(file_name) if File.exist?(file_name)	
    				$mutex_file.synchronize{  
-   					ensureDir(dirName)   	
-   					Write(file_name,data)
-   					sendFile(file_name,"限行规则导出.txt")	
+   					ensureDir(dirName)
+   					if write_xlsx(file_name,data)   
+   						sendFile(file_name,"限行规则导出.xlsx")		
+   					else
+   						file_name =  File.join(dirName,"outputMainData.txt")
+   						File.delete(file_name) if File.exist?(file_name)	
+   						if Write(file_name,data)
+   							sendFile(file_name,"限行规则导出.txt")	
+   						end
+   					end
    				}
    				return
    			end		
@@ -144,7 +152,7 @@ class HomeController < ApplicationController
    				}
    				return
    			end
-   		end   		
+   		end    		  		
    	end
 
    	render html: "<strong>没有可导出的数据</strong>".html_safe , layout: "application"      
