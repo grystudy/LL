@@ -1,5 +1,4 @@
 require 'roo'
-
 def read_xlsx(fileName)
 	xlsx = Roo::Spreadsheet.open(fileName)
 	lines=[]
@@ -15,18 +14,20 @@ def read_xlsx(fileName)
 	lines
 end
 
+require 'spreadsheet'
 def write_xlsx(fileName, data)
 	return false if !data
 
 	dirName=File.dirname(fileName)      
 	ensureDir(dirName)
-    xlsx = Roo::Spreadsheet.open(fileName)
+	book = Spreadsheet::Workbook.new
+	sheet1 = book.create_worksheet
 	#行从一开始，列头
-		data.each_with_index do |line,i|
-			line.each_with_index do |col,col_i|
-				xlsx.set(i+1 , col_i , col)
-			end
+	data.each_with_index do |line,i|
+		line.each_with_index do |col,col_i|
+			sheet1[i+1,col_i]=col
 		end
-	xlsx.close
+	end
+	book.write fileName
 	true
 end

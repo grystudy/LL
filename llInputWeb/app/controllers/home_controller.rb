@@ -124,12 +124,12 @@ class HomeController < ApplicationController
    		if type=="main"
    			data = $main_data
    			if data && data.length>0
-   				file_name =  File.join(dirName,"outputMainData.xlsx")
+   				file_name =  File.join(dirName,"outputMainData.xls")
    				File.delete(file_name) if File.exist?(file_name)	
    				$mutex_file.synchronize{  
    					ensureDir(dirName)
    					if write_xlsx(file_name,data)   
-   						sendFile(file_name,"限行规则导出.xlsx")		
+   						sendFile(file_name,"限行规则导出.xls")		
    					else
    						file_name =  File.join(dirName,"outputMainData.txt")
    						File.delete(file_name) if File.exist?(file_name)	
