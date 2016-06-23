@@ -1,17 +1,28 @@
 Rails.application.routes.draw do
-scope(:path => '/llweb') do 
+	scope(:path => '/llweb') do 
 # get 'home/index'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-get 'home/resetByFile'
-post 'home/import'
-get 'home/main'
-match 'home/import' => 'home#main' , :via => :get
-get 'home/edit'
-post 'home/edit_item'
-match 'home/edit_item' => 'home#main' , :via => :get
-match 'home/index' => 'home#main' , :via => :get
-get 'home/download'
-root 'home#index'
+  get 'home/resetByFile'
+  post 'home/import'
+  get 'home/main'
+  match 'home/import' => 'home#main' , :via => :get
+  get 'home/edit'
+  post 'home/edit_item'
+  match 'home/edit_item' => 'home#main' , :via => :get
+  match 'home/index' => 'home#main' , :via => :get
+  get 'home/download'
+
+  get 'eventll/main'
+  get 'eventll/resetByFile'
+  post 'eventll/import'
+  match 'eventll/import' => 'eventll#main' , :via => :get
+  get 'eventll/edit'
+  post 'eventll/edit_item'
+  match 'eventll/edit_item' => 'eventll#main' , :via => :get
+  match 'eventll/index' => 'eventll#main' , :via => :get
+  get 'eventll/download'
+
+  root 'home#index'
 end
 end

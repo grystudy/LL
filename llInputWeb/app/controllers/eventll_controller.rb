@@ -1,4 +1,4 @@
-class HomeController < ApplicationController
+class EventllController < ApplicationController
 	$mutex_main_data = Mutex.new 
 	$mutex_file = Mutex.new
 	$main_data = []
@@ -184,4 +184,3 @@ class HomeController < ApplicationController
   end       
 end
 end
-

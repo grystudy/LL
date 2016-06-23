@@ -1,0 +1,41 @@
+<div>
+<table>	
+	<thead> <!-- table head -->
+		<tr>
+			<th scope="rowgroup">序号</th>
+			<th scope="col">关联描述Id</th>
+			<th scope="col">行政code</th>
+			<th scope="col">车牌</th>
+			<th scope="col">归属地</th>
+			<th scope="col">登记限制</th>
+			<th scope="col">事件限行</th>
+			<th scope="col">规则类型</th>
+			<th scope="col">周末上班</th>
+			<th scope="col">节假日</th>
+			<th scope="col">英文规则</th>
+			<th scope="col">31号</th>
+			<th scope="col">限号</th>
+			<th scope="col">时段</th>
+			<th scope="col">有效期</th>
+			<th scope="col" style="text-align:left">区域</th>
+			<th scope="col">图片</th>
+		</tr>
+	</thead>
+	<tbody> <!-- table body -->
+	
+	<% if @data %>
+		 <% @data.each do |data_item| %>
+		<tr>
+		 <% data_item.each_with_index do |field_item,i| %>
+		 <% if i == 0 %>
+		   <td ><a href="edit?id=<%= field_item%>"><%= field_item%></a></th>
+		 <% else %>
+		 			<td><%= field_item%></th>
+		 <%end%>
+			<% end%>
+		</tr>
+		<% end%>
+	<% end%>
+	</tbody>	
+</table>
+</div>
