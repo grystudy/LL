@@ -8,7 +8,7 @@ def read_xlsx(fileName)
 			col_value =  column.value.to_s
 			row_array << col_value ? col_value : ""
 		end
-		lines << row_array
+		lines << row_array if row_array.any? { |e| e&&!e.empty? }
 	end
 	xlsx.close
 	lines

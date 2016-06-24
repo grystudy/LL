@@ -1,55 +1,66 @@
-		<%i= 0%>
-		<%item= @item%>
-		<form method="post" action="edit_item" enctype="multipart/form-data">
-			<!-- START ACCOUNT FIELDS -->
-			<fieldset>
-				<h2 class="hdr-account">编辑限行项</h2>
+<% content_for :head do %>
+<%= javascript_include_tag "autoTextArea" %>
+<% end %>
 
-				<div class="fields">
-					<div class="row">
-						<label for="xuhao">序号:</label>
-						<input type="text" id="xuhao" name="xuhao" value = "<%= item[i]%>" class="field-large" readonly = "readonly" />
-						<%= link_to "删除" ,{:controller => "eventll", :action => "edit_item",:del=> 1,:xuhao => item[i]},method: :post ,data: { confirm: "确定删除吗?" } %> 					
-					</div>
-				</div>
+<% content_for :before_body_end do %>
+<script> 
+	var text = document.getElementById("detail");
+		autoTextarea(text);// 调用
+	</script>
+	<% end %>	
+
+	<%i= 0%>
+	<%item= @item%>
+<form method="post" action="edit_item" enctype="multipart/form-data">
+		<!-- START ACCOUNT FIELDS -->
+		<fieldset>
+			<h2 class="hdr-account">编辑限行项</h2>
+
+			<div class="fields">
 				<div class="row">
-					<label for="city-code">城市Code:</label>
-					<input type="text" id="city-code" name="city_code" value = "<%=i= i+1; item[i]%>" pattern="\d{6}" class="field-large" required="required"/>
-				</div>					
-				<div class="row">
-					<label for="city-code">城市:</label>
-					<input type="text" id="city" name="city" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
-				</div>			
-					<div class="row">
-					<label for="title">事件:</label>
-					<input type="text" id="title" name="title" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
-				</div>	
-					<div class="row">
-					<label for="time">时间:</label>
-					<input type="text" id="time" name="time" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
-				</div>				
-					<div class="row">
-					<label for="etime">结束日期:</label>
-					<input type="text" id="etime" name="etime" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
+					<label for="xuhao">序号:</label>
+					<input type="text" id="xuhao" name="xuhao" value = "<%= item[i]%>" class="field-large" readonly = "readonly" />
+					<%= link_to "删除" ,{:controller => "eventll", :action => "edit_item",:del=> 1,:xuhao => item[i]},method: :post ,data: { confirm: "确定删除吗?" } %> 					
 				</div>
-					<div class="row">
-					<label for="area">区域:</label>
-					<input type="text" id="area" name="area" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
-				</div>		
-					<div class="row">
-					<label for="restriction">规则:</label>
-					<input type="text" id="restriction" name="restriction" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
-				</div>		
-					</div>		
-					<div class="row">
-					<label for="detail">详情:</label>
-					<input type="text" id="detail" name="detail" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
-				</div>	
-					</div>		
-					<div class="row">
-					<label for="link">链接:</label>
-					<input type="text" id="link" name="link" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
-				</div>									
-		</fieldset>		
-		<input type="submit" value="完成" class="btn" />
+			</div>
+			<div class="row">
+				<label for="city-code">城市Code:</label>
+				<input type="text" id="city-code" name="city_code" value = "<%=i= i+1; item[i]%>" pattern="\d{6}" class="field-large" required="required"/>
+			</div>					
+			<div class="row">
+				<label for="city-code">城市:</label>
+				<input type="text" id="city" name="city" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
+			</div>			
+			<div class="row">
+				<label for="title">事件:</label>
+				<input type="text" id="title" name="title" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
+			</div>	
+			<div class="row">
+				<label for="time">时间:</label>
+				<input type="text" id="time" name="time" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
+			</div>				
+			<div class="row">
+				<label for="etime">结束日期:</label>
+				<input type="text" id="etime" name="etime" value = "<%=i= i+1; item[i]%>" pattern="\d{4}[0,1]\d[0-3]\d" class="field-large" required="required"/>
+			</div>
+			<div class="row">
+				<label for="area">区域:</label>
+				<input type="text" id="area" name="area" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
+			</div>		
+			<div class="row">
+				<label for="restriction">规则:</label>
+				<input type="text" id="restriction" name="restriction" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
+			</div>		
+		</div>		
+		<div class="row">
+			<label for="detail">详情:</label>
+			<textarea type="text" id="detail" name="detail" class="field-large" required="required"/><%=i= i+1; item[i]%></textarea>
+		</div>	
+	</div>		
+	<div class="row">
+		<label for="link">链接:</label>
+		<input type="text" id="link" name="link" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
+	</div>									
+</fieldset>		
+<input type="submit" value="完成" class="btn" />
 </form>
