@@ -78,6 +78,7 @@ button {
 
 .field-large {
 	width: 250px;
+	width: 70%;
 }
 
 select {
@@ -86,7 +87,7 @@ select {
 
 textarea {
 	font: inherit;
-	padding: 2px;
+	padding: 2px;	
 }
 
 .instructions {
