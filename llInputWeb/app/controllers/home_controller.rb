@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
-	$mutex_main_data = Mutex.new 
-	$mutex_file = Mutex.new
-	$main_data = []
+	@@mutex_main_data = Mutex.new 
+	@@mutex_file = Mutex.new
+	@@main_data = []
 
 	$guishudi_hash = {"1"=> "本地" ,"2"=>"外地","3"=>"本地外地"}
 	$dengji_hash = {"1"=> "不限登记车" ,"2"=>"只限登记车","3"=>"所有车"}
@@ -14,7 +14,7 @@ class HomeController < ApplicationController
 
 	def main
 		@data = []
-		data = $main_data
+		data = @@main_data
 		return nil if !data || data.length == 0         
 		nd = []
 		data.each do |row|
@@ -43,10 +43,10 @@ class HomeController < ApplicationController
 		unless request.get?
 			file_input = params[:fileMain]
 			return if !file_input
-			main_data = try_save_and_parse_data(file_input,MainData,request.remote_ip(),$mutex_file,DataArrayLength)
+			main_data = try_save_and_parse_data(file_input,MainData,request.remote_ip(),@@mutex_file,DataArrayLength)
 			if  main_data
-				$mutex_main_data.synchronize{
-					$main_data = main_data
+				@@mutex_main_data.synchronize{
+					@@main_data = main_data
 				}
 				render  layout: "application" ,inline: "<p>#{file_input.original_filename} 上传成功</p><%= link_to \"查看\",:action => \"main\" %>"
 			else
@@ -57,7 +57,7 @@ class HomeController < ApplicationController
 
 	def edit
 		id = params[:id]    
-		item = search_by_id(id)
+		item = create_or_search(id:id, main_data:@@main_data, data_mutex:@@mutex_main_data){|new_item,maxId|new_item << maxId << "0" << "110000" << ""<< "1" << "3" << "1" <<"1"<<"0"<<"0"<<"0"<<"0"<<""<<""<<""<<""<<""}
 		if item
 			@item = item
 		else
@@ -72,7 +72,7 @@ class HomeController < ApplicationController
 
    def edit_item
    	xuhao  =params[:xuhao]
-   	item = search_by_id(xuhao)
+   	item = create_or_search(id:xuhao, main_data:@@main_data, data_mutex:@@mutex_main_data)
    	if !item 
    		render html: "<strong>未找到该条限行，是不是另一个人正在删除它？</strong>".html_safe , layout: "application"
    		return
@@ -80,8 +80,8 @@ class HomeController < ApplicationController
 
    	del =  params[:del]
    	if del
-   		$mutex_main_data.synchronize{
-   			$main_data.reject!{|itemT|itemT&&itemT.length>0&&itemT.first==xuhao}
+   		@@mutex_main_data.synchronize{
+   			@@main_data.reject!{|itemT|itemT&&itemT.length>0&&itemT.first==xuhao}
    		}
    		render inline: "<strong>序号: #{xuhao} 删除成功！</strong><%= link_to \"查看\",:action => \"main\" %>".html_safe , layout: "application"
    	else
@@ -107,7 +107,7 @@ class HomeController < ApplicationController
    			uploadFile(pic,Picture,nil,$mutex_file) if pic
    		end
    		fn = "" if !fn
-   		$mutex_main_data.synchronize{
+   		@@mutex_main_data.synchronize{
    			item.clear
    			item <<xuhao<< mesIndex << city_code<<chepai<<guishudi<<dengji<<shijian<<leixing<<zhoumo<<jiejiari<<yingwen<<sanshiyi<<xianhao<<time<<date<<quyu<<fn      
    		}
@@ -120,11 +120,11 @@ class HomeController < ApplicationController
    	if type
    		dirName="#{Rails.root}/public/output"   		
    		if type=="main"
-   			data = $main_data
+   			data = @@main_data
    			if data && data.length>0
    				file_name =  File.join(dirName,"outputMainData.xls")
    				File.delete(file_name) if File.exist?(file_name)	
-   				$mutex_file.synchronize{  
+   				@@mutex_file.synchronize{  
    					ensureDir(dirName)
    					if write_xlsx(file_name,data)   
    						sendFile(file_name,"限行规则导出.xls")		
@@ -142,7 +142,7 @@ class HomeController < ApplicationController
    			sourceDir = File.join("public/input",Picture)
    			file_name = File.join(dirName,"pictures.zip")
    			if File.directory?(sourceDir)  
-   				$mutex_file.synchronize{   
+   				@@mutex_file.synchronize{   
    					ensureDir(dirName) 
    					File.delete(file_name) if File.exist?(file_name)	
    					compress(sourceDir,file_name)
@@ -158,30 +158,5 @@ class HomeController < ApplicationController
 
    private    
    require 'FileHelper.rb'
-   def search_by_id(id)
-   	return nil if !id 
-   	if !id || id == "-1"
-   		new_item = []
-      # 新建一个
-      $mutex_main_data.synchronize{
-      	data = $main_data
-      	data = [] if !data
-      	maxId = (data.length == 0 ?  1 : (data.last.first.to_i + 1)).to_s
-      	data << new_item
-      	$main_data = data
-
-      	new_item << maxId << "0" << "110000" << ""<< "1" << "3" << "1" <<"1"<<"0"<<"0"<<"0"<<"0"<<""<<""<<""<<""<<""
-      }     
-      return new_item
-  else            
-  	data = $main_data  
-  	item = data.select{|i|i&&i.length>0&&i[0]&&i[0]==id}
-  	if item&&item.length>0
-  		return item[0]
-  	else
-  		return nil
-  	end
-  end       
-end
 end
 

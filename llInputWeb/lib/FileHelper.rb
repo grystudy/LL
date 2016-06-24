@@ -109,7 +109,6 @@ def sendFile(file_name,displayName)
 	io.close   		
 end
 
-
 require 'pathname'
 # require 'rubygems'  
 # require 'zip/zipfilesystem'  
@@ -136,3 +135,30 @@ def add_file_to_zip(file_path, zip,path_in_zip)
 		zip.add(path_in_zip,file_path)  
 	end  
 end 
+
+def create_or_search(id: "-1", data_mutex:nil, main_data:nil)
+	return nil if !id 
+	return nil if !main_data
+	if !id || id == "-1"
+		new_item = []
+      # 新建一个
+      data_mutex.synchronize{
+      	data = main_data
+      	data = [] if !data
+      	maxId = (data.length == 0 ?  1 : (data.last.first.to_i + 1)).to_s
+      	data << new_item
+      	if block_given?
+      		yield(new_item,maxId)
+      	end
+      }     
+      return new_item
+  else            
+  	data = main_data  
+  	item = data.select{|i|i&&i.length>0&&i[0]&&i[0]==id}
+  	if item&&item.length>0
+  		return item[0]
+  	else
+  		return nil
+  	end
+  end       
+end

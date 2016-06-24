@@ -9,139 +9,47 @@
 					<div class="row">
 						<label for="xuhao">序号:</label>
 						<input type="text" id="xuhao" name="xuhao" value = "<%= item[i]%>" class="field-large" readonly = "readonly" />
-						<%= link_to "删除" ,{:controller => "home", :action => "edit_item",:del=> 1,:xuhao => item[i]},method: :post ,data: { confirm: "确定删除吗?" } %> 					
+						<%= link_to "删除" ,{:controller => "eventll", :action => "edit_item",:del=> 1,:xuhao => item[i]},method: :post ,data: { confirm: "确定删除吗?" } %> 					
 					</div>
 				</div>
-				<%i= i+1%>
-				<div class="row">
-					<label for="mesIndex">关联描述Id:</label>
-					<input type="text" id="mesIndex" name="mesIndex" value = "<%= item[i]%>" pattern="\d*" class="field-large" required="required" aria-required="true" />
-				</div>
-				<%i= i+1%>
 				<div class="row">
 					<label for="city-code">城市Code:</label>
-					<input type="text" id="city-code" name="city_code" value = "<%= item[i]%>" pattern="\d{6}" class="field-large" required="required"/>
-				</div>
-				<%i= i+1%>
+					<input type="text" id="city-code" name="city_code" value = "<%=i= i+1; item[i]%>" pattern="\d{6}" class="field-large" required="required"/>
+				</div>					
 				<div class="row">
-					<label for="chepai">车牌:</label>
-					<input type="text" id="chepai" name="chepai" value = "<%= item[i]%>" placeholder="例如: 赣A;赣M" required="required" class="field-large" />
-				</div>
-				<%i= i+1%>
-				<div class="row">
-					<label for="guishudi">归属地:</label>
-					<%= select_tag(:guishudi, options_for_select($guishudi_hash.invert.to_a,item[i])) %>				
-				</div>
-				<%i= i+1%>
-				<div class="row">
-					<label for="dengji">登记限制:</label>
-					<%= select_tag(:dengji, options_for_select($dengji_hash.invert.to_a,item[i])) %>		
-				</div>
-				<%i= i+1%>
-				<div class="row">
-					<label for="shijian">事件限行:</label>
-					<%= select_tag(:shijian, options_for_select($shijian_hash.invert.to_a,item[i])) %>		
-				</div>
-				<%i= i+1%>
-				<div class="row">
-					<label for="leixing">规则类型:</label>
-					<%= select_tag(:leixing, options_for_select($leixing_hash.invert.to_a,item[i])) %>		
-				</div>
-				<%i= i+1%>
-				<div class="row">
-					<label for="zhoumo">周末上班:</label>
-					<%= select_tag(:zhoumo, options_for_select($truefalse_hash.invert.to_a,item[i])) %>		
-				</div>
-				<%i= i+1%>
-				<div class="row">
-					<label for="jiejiari">节假日:</label>
-					<%= select_tag(:jiejiari,options_for_select($truefalse_hash.invert.to_a,item[i])) %>		
-				</div>
-				<%i= i+1%>
-				<div class="row">
-					<label for="yingwen">英文规则:</label>
-					<%= select_tag(:yingwen, options_for_select($yingwen_hash.invert.to_a,item[i])) %>		
-				</div>
-				<%i= i+1%>
-				<div class="row">
-					<label for="sanshiyi">31号:</label>
-					<%= select_tag(:sanshiyi, options_for_select($truefalse_hash.invert.to_a,item[i])) %>		
-				</div>		
-				<%i= i+1%>
-				<div class="row">
-					<label for="xianhao">限号:</label>
-					<input type="text" id="xianhao" name="xianhao" value ="<%= item[i]%>" pattern="((\d|-1)(,(\d|-1))*;*)*" class="field-large" placeholder= "例如: 1,6;2,7;3,8;4,9;5,0。-1为不限行"/>
+					<label for="city-code">城市:</label>
+					<input type="text" id="city" name="city" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
 				</div>			
-				<%i= i+1%>	
-				<div class="row">
-					<label for="time">时段:</label>
-					<input type="text" id="time" name="time" value ="<%= item[i]%>" pattern="(((0?\d|1\d|2[0-4]):[0-5]\d)-((0?\d|1\d|2[0-4]):[0-5]\d);?)*" class="field-large" placeholder= "例如: 07:00-09:00;16:30-18:30"/>
+					<div class="row">
+					<label for="title">事件:</label>
+					<input type="text" id="title" name="title" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
+				</div>	
+					<div class="row">
+					<label for="time">时间:</label>
+					<input type="text" id="time" name="time" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
+				</div>				
+					<div class="row">
+					<label for="etime">结束日期:</label>
+					<input type="text" id="etime" name="etime" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
 				</div>
-				<%i= i+1%>
-				<div class="row">
-					<label for="date">有效期:</label>
-					<input type="text" id="date" name="date" value ="<%= item[i]%>" pattern="\d{4}[0,1]\d[0-3]\d-\d{4}[0,1]\d[0-3]\d" class="field-large" placeholder= "例如: 20160601-20160710"/>
-				</div>
-				<%i= i+1%>
-				<div class="row">
-					<label for="time">区域:</label>
-					<textarea id="quyu" name="quyu" cols="40" rows="5" class="field-large"><%= item[i]%></textarea>
-				</div>
-			</div>
-		</fieldset>
-
-		
-		<fieldset>
-			<h2 class="hdr-public-profile">图片信息</h2>
-
-			<div class="fields">						
-				<p class="row">
-					<label for="fn">文件:</label>
-					<input id="fn" name="fn" cols="40" rows="5" value = "<%= i=i+1;item[i]%>" class="field-large" readonly = "readonly" ></input>
-					<button type="button"  id="btnClear" onclick="clearInputFile()">清空</button>
-				</p>
-				<div class="row">
-					<label for="picture">区域图片:</label>
-					<input type="file" id="picture" name="picture" onchange="fileChanged()" />
-					<p class="instructions">文件不应超过 700k. JPG, GIF or PNG.</p>
-				</div>
-			</div>
-		</fieldset>
-		
-
+					<div class="row">
+					<label for="area">区域:</label>
+					<input type="text" id="area" name="area" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
+				</div>		
+					<div class="row">
+					<label for="restriction">规则:</label>
+					<input type="text" id="restriction" name="restriction" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
+				</div>		
+					</div>		
+					<div class="row">
+					<label for="detail">详情:</label>
+					<input type="text" id="detail" name="detail" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
+				</div>	
+					</div>		
+					<div class="row">
+					<label for="link">链接:</label>
+					<input type="text" id="link" name="link" value = "<%=i= i+1; item[i]%>" class="field-large" required="required"/>
+				</div>									
+		</fieldset>		
 		<input type="submit" value="完成" class="btn" />
-
-		<script type="text/javascript">
-			var fn = document.getElementById("fn");
-			var file = document.getElementById("picture");
-			function clear1() {
-// for IE, Opera, Safari, Chrome
-if (file.outerHTML) {
-	file.outerHTML = file.outerHTML;
-} else { // FF(包括3.5)
-	file.value = "";
-}
-}
-function fileChanged(){
-
-	fn.value = file.value
-}
-
-function clearInputFile(){
-	var f = file
-	fn.value = ""
-	if(f.value){
-		try{
-                f.value = ''; //for IE11, latest Chrome/Firefox/Opera...
-            }catch(err){
-            }
-            if(f.value){ //for IE5 ~ IE10
-            	var form = document.createElement('form'), ref = f.nextSibling;
-            	form.appendChild(f);
-            	form.reset();
-            	ref.parentNode.insertBefore(f,ref);
-            }
-        }
-    }
-</script> 
 </form>

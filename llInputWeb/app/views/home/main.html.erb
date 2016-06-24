@@ -28,9 +28,9 @@
 		<tr>
 		 <% data_item.each_with_index do |field_item,i| %>
 		 <% if i == 0 %>
-		   <td ><a href="edit?id=<%= field_item%>"><%= field_item%></a></th>
-		 <% else %>
-		 			<td><%= field_item%></th>
+		   <td><%= link_to field_item,{:controller=> "home",:action=>"edit",:id=>field_item }%></td>
+		<% else %>
+		   <td><%= field_item%></td>
 		 <%end%>
 			<% end%>
 		</tr>
