@@ -64,7 +64,8 @@
                     page=len % pageSize==0 ? len/pageSize : Math.floor(len/pageSize)+1;//根据记录条数，计算页数
                     curPage=1;        //当前页
                      direct=0;        //方向
-                     firstPage();
+                    // firstPage();
+                     displayPage();
                 });
             });
 

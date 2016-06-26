@@ -1,10 +1,23 @@
+<% content_for :head do %>
+<style type="text/css">
+u {
+  text-decoration: underline;
+  color: #369;
+}
+u:hover {
+cursor:pointer
+}
+</style>
+
+<% end %>
+
 <% content_for :before_body_end do %>
 <%= javascript_include_tag "tableRowBeauty" %>
 <%= javascript_include_tag "pageSupport" %>
 <% end %>
-  <%= render template: "home/pagelink"%>
+ 
 <div>
-<table>	
+<table id="mytable">	
 	<thead> <!-- table head -->
 		<tr>
 			<th scope="rowgroup">序号</th>
@@ -44,3 +57,7 @@
 	</tbody>	
 </table>
 </div>
+<% if @data &&@data.length>0%>
+ <%= render template: "home/pagelink"%>
+ 	<% end%>
+
