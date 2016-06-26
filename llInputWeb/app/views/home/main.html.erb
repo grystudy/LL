@@ -1,21 +1,8 @@
 <% content_for :before_body_end do %>
-<script type='text/javascript'>
-
-var trs=document.getElementsByTagName('tr');
-
-for(var i=0; i<trs.length;i++){
-
-   if(i%2==0){
-
-  trs[i].style.background="#d2ebf9";
-
-}else{
- trs[i].style.background="#abcdef";
- }
-   }
-</script>
+<%= javascript_include_tag "tableRowBeauty" %>
+<%= javascript_include_tag "pageSupport" %>
 <% end %>
-
+  <%= render template: "home/pagelink"%>
 <div>
 <table>	
 	<thead> <!-- table head -->
