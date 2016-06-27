@@ -31,6 +31,8 @@ class HomeController < ApplicationController
 			nd << nr     
 		end
 		@data = nd
+
+		@xuhao = params[:xuhao]
 	end
 
 	def resetByFile
@@ -111,7 +113,7 @@ class HomeController < ApplicationController
    			item.clear
    			item <<xuhao<< mesIndex << city_code<<chepai<<guishudi<<dengji<<shijian<<leixing<<zhoumo<<jiejiari<<yingwen<<sanshiyi<<xianhao<<time<<date<<quyu<<fn      
    		}
-   		render inline: "<strong>序号: #{xuhao} 提交成功！</strong>　<%= link_to \"查看\",:action => \"main\" %>".html_safe , layout: "application"
+   		render inline: "<strong>序号: #{xuhao} 提交成功！</strong>　<%= link_to \"查看\",:action => \"main\", :xuhao=> #{xuhao}%>".html_safe , layout: "application"
    	end
    end
 

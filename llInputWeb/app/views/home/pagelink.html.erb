@@ -9,9 +9,9 @@
 	}
 </style>
 <% end %>
-
+<%item= @xuhao%>
 <a id="btn0"></a>
-<input id="pageSize" type="text" size="1" maxlength="2" value="getDefaultValue()"/><a> 条 </a> <u id="pageSizeSet">设置</u> 
+<input id="pageSize" type="text" size="1" maxlength="2" value= <%= (item&&item.length>0) ? item : "-1" %> /><a> 条 </a> <u id="pageSizeSet">设置</u> 
 <a id="sjzl"></a> 
 <u id="btn1">首页</u>
 <u id="btn2">上一页</u>

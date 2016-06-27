@@ -18,6 +18,8 @@ class EventllController < ApplicationController
 			nd << nr     
 		end
 		@data = nd
+
+      @xuhao = params[:xuhao]
 	end
 
 	def resetByFile
@@ -85,7 +87,7 @@ class EventllController < ApplicationController
    			item.clear
    			item <<xuhao<< city_code << city<<title<<time<<etime<<area<<restriction<<detail<<link     
    		}
-   		render inline: "<strong>序号: #{xuhao} 提交成功！</strong>　<%= link_to \"查看\",:action => \"main\" %>".html_safe , layout: "application"
+   		render inline: "<strong>序号: #{xuhao} 提交成功！</strong>　<%= link_to \"查看\",:action => \"main\", :xuhao=> #{xuhao}%>".html_safe , layout: "application"
    	end
    end
 
