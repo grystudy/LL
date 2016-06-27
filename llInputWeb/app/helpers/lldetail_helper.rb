@@ -1,0 +1,2 @@
+module LldetailHelper
+end

@@ -1,0 +1,35 @@
+<% content_for :before_body_end do %>
+<%= javascript_include_tag "tableRowBeauty" %>
+<%= javascript_include_tag "pageSupport" %>
+<% end %>
+<div>
+	<table id="mytable">	
+		<thead> <!-- table head -->
+			<tr>
+				<th scope="rowgroup">序号</th>
+				<th scope="col">行政code</th>
+				<th scope="col">详情描述</th>
+				<th scope="col">本地外地</th>
+			</tr>
+		</thead>
+		<tbody> <!-- table body -->
+			
+			<% if @data %>
+			<% @data.each do |data_item| %>
+			<tr>
+				<% data_item.each_with_index do |field_item,i| %>
+				<% if i == 0 %>
+				<td><%= link_to field_item,{:controller=> "lldetail",:action=>"edit",:id=>field_item }%></td>
+				<% else %>
+				<td><%= field_item%></td>
+				<%end%>
+				<% end%>
+			</tr>
+			<% end%>
+			<% end%>
+		</tbody>	
+	</table>
+</div>
+<% if @data &&@data.length>0%>
+<%= render template: "home/pagelink"%>
+<% end%>

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'lldetail/main'
+
 	scope(:path => '/llweb') do 
 # get 'home/index'
 
@@ -22,6 +24,16 @@ Rails.application.routes.draw do
   match 'eventll/edit_item' => 'eventll#main' , :via => :get
   match 'eventll/index' => 'eventll#main' , :via => :get
   get 'eventll/download'
+
+  get 'lldetail/main'
+  get 'lldetail/resetByFile'
+  post 'lldetail/import'
+  match 'lldetail/import' => 'lldetail#main' , :via => :get
+  get 'lldetail/edit'
+  post 'lldetail/edit_item'
+  match 'lldetail/edit_item' => 'lldetail#main' , :via => :get
+  match 'lldetail/index' => 'lldetail#main' , :via => :get
+  get 'lldetail/download'
 
   root 'home#index'
 end
