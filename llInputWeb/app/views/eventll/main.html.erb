@@ -1,41 +1,41 @@
 <% content_for :before_body_end do %>
 <%= javascript_include_tag "tableRowBeauty" %>
- <%= javascript_include_tag "pageSupport" %>
+<%= javascript_include_tag "pageSupport" %>
 <% end %>
 <div>
-<table id="mytable">	
-	<thead> <!-- table head -->
-		<tr>
-			<th scope="rowgroup">序号</th>
-			<th scope="col">行政code</th>
-			<th scope="col">城市</th>
-			<th scope="col">事件</th>
-			<th scope="col">时间</th>
-			<th scope="col">结束日期</th>
-			<th scope="col">区域</th>
-			<th scope="col">规则</th>
-			<th scope="col" style="text-align:left">详情</th>
-			<th scope="col">链接</th>
-		</tr>
-	</thead>
-	<tbody> <!-- table body -->
-	
-	<% if @data %>
-		 <% @data.each do |data_item| %>
-		<tr>
-		 <% data_item.each_with_index do |field_item,i| %>
-		 <% if i == 0 %>
-		    <td><%= link_to field_item,{:controller=> "eventll",:action=>"edit",:id=>field_item }%></td>
-		 <% else %>
-		 	<td><%= field_item%></td>
-		 <%end%>
+	<table id="mytable">	
+		<thead> <!-- table head -->
+			<tr>
+				<th scope="rowgroup">序号</th>
+				<th scope="col">行政code</th>
+				<th scope="col">城市</th>
+				<th scope="col">事件</th>
+				<th scope="col">时间</th>
+				<th scope="col">结束日期</th>
+				<th scope="col">区域</th>
+				<th scope="col">规则</th>
+				<th scope="col" style="text-align:left">详情</th>
+				<th scope="col">链接</th>
+			</tr>
+		</thead>
+		<tbody> <!-- table body -->
+			
+			<% if @data %>
+			<% @data.each do |data_item| %>
+			<tr>
+				<% data_item.each_with_index do |field_item,i| %>
+				<% if i == 0 %>
+				<td><%= link_to field_item,{:controller=> "eventll",:action=>"edit",:id=>field_item }%></td>
+				<% else %>
+				<td><%= field_item%></td>
+				<%end%>
+				<% end%>
+			</tr>
 			<% end%>
-		</tr>
-		<% end%>
-	<% end%>
-	</tbody>	
-</table>
+			<% end%>
+		</tbody>	
+	</table>
 </div>
 <% if @data &&@data.length>0%>
-  <%= render template: "home/pagelink"%>
-  <% end%>
+<%= render template: "home/pagelink"%>
+<% end%>

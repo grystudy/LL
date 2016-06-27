@@ -1,63 +1,50 @@
-<% content_for :head do %>
-<style type="text/css">
-u {
-  text-decoration: underline;
-  color: #369;
-}
-u:hover {
-cursor:pointer
-}
-</style>
-
-<% end %>
-
 <% content_for :before_body_end do %>
 <%= javascript_include_tag "tableRowBeauty" %>
 <%= javascript_include_tag "pageSupport" %>
 <% end %>
- 
+
 <div>
-<table id="mytable">	
-	<thead> <!-- table head -->
-		<tr>
-			<th scope="rowgroup">序号</th>
-			<th scope="col">关联描述Id</th>
-			<th scope="col">行政code</th>
-			<th scope="col">车牌</th>
-			<th scope="col">归属地</th>
-			<th scope="col">登记限制</th>
-			<th scope="col">事件限行</th>
-			<th scope="col">规则类型</th>
-			<th scope="col">周末上班</th>
-			<th scope="col">节假日</th>
-			<th scope="col">英文规则</th>
-			<th scope="col">31号</th>
-			<th scope="col">限号</th>
-			<th scope="col">时段</th>
-			<th scope="col">有效期</th>
-			<th scope="col" style="text-align:left">区域</th>
-			<th scope="col">图片</th>
-		</tr>
-	</thead>
-	<tbody> <!-- table body -->
-	
-	<% if @data %>
-		 <% @data.each do |data_item| %>
-		<tr>
-		 <% data_item.each_with_index do |field_item,i| %>
-		 <% if i == 0 %>
-		   <td><%= link_to field_item,{:controller=> "home",:action=>"edit",:id=>field_item }%></td>
-		<% else %>
-		   <td><%= field_item%></td>
-		 <%end%>
+	<table id="mytable">	
+		<thead> <!-- table head -->
+			<tr>
+				<th scope="rowgroup">序号</th>
+				<th scope="col">关联描述Id</th>
+				<th scope="col">行政code</th>
+				<th scope="col">车牌</th>
+				<th scope="col">归属地</th>
+				<th scope="col">登记限制</th>
+				<th scope="col">事件限行</th>
+				<th scope="col">规则类型</th>
+				<th scope="col">周末上班</th>
+				<th scope="col">节假日</th>
+				<th scope="col">英文规则</th>
+				<th scope="col">31号</th>
+				<th scope="col">限号</th>
+				<th scope="col">时段</th>
+				<th scope="col">有效期</th>
+				<th scope="col" style="text-align:left">区域</th>
+				<th scope="col">图片</th>
+			</tr>
+		</thead>
+		<tbody> <!-- table body -->
+
+			<% if @data %>
+			<% @data.each do |data_item| %>
+			<tr>
+				<% data_item.each_with_index do |field_item,i| %>
+				<% if i == 0 %>
+				<td><%= link_to field_item,{:controller=> "home",:action=>"edit",:id=>field_item }%></td>
+				<% else %>
+				<td><%= field_item%></td>
+				<%end%>
+				<% end%>
+			</tr>
 			<% end%>
-		</tr>
-		<% end%>
-	<% end%>
-	</tbody>	
-</table>
+			<% end%>
+		</tbody>	
+	</table>
 </div>
 <% if @data &&@data.length>0%>
- <%= render template: "home/pagelink"%>
- 	<% end%>
+<%= render template: "home/pagelink"%>
+<% end%>
 

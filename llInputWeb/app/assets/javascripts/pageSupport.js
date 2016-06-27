@@ -13,11 +13,11 @@
                 page=len % pageSize==0 ? len/pageSize : Math.floor(len/pageSize)+1;//根据记录条数，计算页数
                 // alert("page==="+page);
                 curPage=1;    // 设置当前为第一页
-                displayPage(1);//显示第一页
+                displayPage();//显示第一页
 
-                document.getElementById("btn0").innerHTML="当前 " + curPage + "/" + page + " 页    每页 ";    // 显示当前多少页
-                document.getElementById("sjzl").innerHTML="数据总量 " + len + "";        // 显示数据量
-                document.getElementById("pageSize").value = pageSize;
+                //$("#btn0").innerHTML="当前 " + curPage + "/" + page + " 页    每页 ";    // 显示当前多少页
+                $("#sjzl").html("数据总量 " + len + "");        // 显示数据量
+                $("#pageSize").val(pageSize);
 
                
 
@@ -90,7 +90,7 @@
                 }
 
                
-                document.getElementById("btn0").innerHTML="当前 " + curPage + "/" + page + " 页    每页 ";        // 显示当前多少页
+                $("#btn0").html("当前 " + curPage + "/" + page + " 页    每页 ");        // 显示当前多少页
 
                 begin=(curPage-1)*pageSize + 1;// 起始记录号
                 end = begin + 1*pageSize - 1;    // 末尾记录号
