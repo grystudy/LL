@@ -1,6 +1,3 @@
-var xPos;
-var yPos;
-
 function showToolTip(title,msg,evt){
     if (evt) {
         var url = evt.target;
@@ -10,8 +7,8 @@ function showToolTip(title,msg,evt){
         var url = evt.srcElement;
      }
 
-    xPos = evt.clientX;
-    yPos = evt.clientY;
+   var xPos = evt.clientX;
+   var yPos = evt.clientY;
 
    var toolTip = document.getElementById("toolTip");
    //toolTip.innerHTML = "<h1>"+title+"</h1><p>"+msg+"</p>";
