@@ -1,0 +1,18 @@
+#toolTip{
+   border:1px solid #CCC;
+   background-color:#F9F9F9;
+   width:auto;
+   position:absolute;
+   visibility: hidden;
+   overflow: hidden;
+  	font-family: Tahoma,"ËÎÌå";
+	font-size: 16px;
+	font-weight: normal;
+   color:#333;
+}
+
+#toolTip div {
+   margin:0px;
+   padding:0px 0px;   
+}
+

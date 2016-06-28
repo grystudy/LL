@@ -1,3 +1,8 @@
+<% content_for :head do %>
+<%= stylesheet_link_tag    'easyToolTip'%>
+<%= javascript_include_tag "easyToolTip" %>
+<% end %>
+
 <% content_for :before_body_end do %>
 <%= javascript_include_tag "tableRowBeauty" %>
 <%= javascript_include_tag "pageSupport" %>
@@ -21,7 +26,7 @@
 				<% if i == 0 %>
 				<td><%= link_to field_item,{:controller=> "lldetail",:action=>"edit",:id=>field_item }%></td>
 				<% else %>
-				<td><%= field_item%></td>
+				<td onmouseover="showToolTip('1',&quot;<%= field_item.gsub(/\n/,'') %>&quot;,event);" onmouseout="hideToolTip();"><%= field_item%></td>
 				<%end%>
 				<% end%>
 			</tr>
@@ -32,4 +37,5 @@
 </div>
 <% if @data &&@data.length>0%>
 <%= render template: "home/pagelink"%>
+<div id="toolTip"> </div>
 <% end%>

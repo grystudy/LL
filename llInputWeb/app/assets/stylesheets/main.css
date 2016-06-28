@@ -45,15 +45,19 @@ thead th {
 	text-transform: uppercase;
 }
 
-    td  
-    {  
-     white-space: nowrap;  
-     padding: .35em;	
-    }  
+td  
+{  
+	white-space: nowrap;  
+	padding: .35em;	
+	max-width:350px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}  
 
 div
 {
-overflow-x: auto;
+	overflow-x: auto;
 }
 /*
 div{border-radius: 10px;

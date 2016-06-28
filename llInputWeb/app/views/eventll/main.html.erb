@@ -1,3 +1,13 @@
+<% content_for :head do %>
+<style type="text/css">
+td {
+	max-width: 200px;
+}
+</style>
+<%= stylesheet_link_tag    'easyToolTip'%>
+<%= javascript_include_tag "easyToolTip" %>
+<% end %>
+
 <% content_for :before_body_end do %>
 <%= javascript_include_tag "tableRowBeauty" %>
 <%= javascript_include_tag "pageSupport" %>
@@ -14,8 +24,8 @@
 				<th scope="col">结束日期</th>
 				<th scope="col">区域</th>
 				<th scope="col">规则</th>
-				<th scope="col" style="text-align:left">详情</th>
-				<th scope="col">链接</th>
+				<th scope="col">详情</th>
+				<th scope="col" style="text-align:left">链接</th>
 			</tr>
 		</thead>
 		<tbody> <!-- table body -->
@@ -27,7 +37,7 @@
 				<% if i == 0 %>
 				<td><%= link_to field_item,{:controller=> "eventll",:action=>"edit",:id=>field_item }%></td>
 				<% else %>
-				<td><%= field_item%></td>
+				<td onmouseover="showToolTip('1',&quot;<%= field_item.gsub(/\n/,'') %>&quot;,event);" onmouseout="hideToolTip();" ><%= field_item%></td>
 				<%end%>
 				<% end%>
 			</tr>
@@ -38,4 +48,5 @@
 </div>
 <% if @data &&@data.length>0%>
 <%= render template: "home/pagelink"%>
+<div id="toolTip"> </div>
 <% end%>

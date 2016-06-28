@@ -20,7 +20,7 @@
 				<div class="row">
 					<label for="xuhao">序号:</label>
 					<input type="text" id="xuhao" name="xuhao" value = "<%= item[i]%>" class="field-medium" readonly = "readonly" />
-					<%= link_to "删除" ,{:controller => "eventll", :action => "edit_item",:del=> 1,:xuhao => item[i]},method: :post ,data: { confirm: "确定删除吗?" } %> 					
+					<%= link_to "删除" ,{:controller => "lldetail", :action => "edit_item",:del=> 1,:xuhao => item[i]},method: :post ,data: { confirm: "确定删除吗?" } %> 					
 				</div>
 			</div>
 			<div class="row">
