@@ -77,13 +77,13 @@ inputMainData.each_with_index do |item,indexInMainData|
  i_index_temp = i_index_temp + 1;
  cityCode = item[i_index_temp];
  i_index_temp = i_index_temp + 1;
+ cityName = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
  chepaihao = item[i_index_temp];
  i_index_temp = i_index_temp + 1;
  bendiwaidiType = item[i_index_temp];
  i_index_temp = i_index_temp + 1;
  waidiRegisterType = item[i_index_temp];
- i_index_temp = i_index_temp + 1;
- isEventOri = item[i_index_temp];
  i_index_temp = i_index_temp + 1;
  rType = item[i_index_temp];
  i_index_temp = i_index_temp + 1;
@@ -102,6 +102,10 @@ inputMainData.each_with_index do |item,indexInMainData|
  dateRange = item[i_index_temp];
  i_index_temp = i_index_temp + 1;
  strArea = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ rule = item[i_index_temp];
+ i_index_temp = i_index_temp + 1;
+ image = item[i_index_temp];
 
  isRTRiqi = rType == "1";
  isRTXingqi = rType == "2";
@@ -127,8 +131,8 @@ inputMainData.each_with_index do |item,indexInMainData|
       if (isRTRiqi)
         lstRNumEveryDay = []
         # 兰州极特殊 1,6;2,7;3,8;4,9;5,0 车牌尾号为l、6的机动车，每月1日、6日、11日、16日、21日、26日、31日限行
-        rNumSplitted.each do |t|   
-          (1..10).each do |i|  
+        (1..10).each do |i|
+          rNumSplitted.each do |t|              
             c = i == 10 ? 0 : i
             if (t.include?(c.to_s))
               lstRNumEveryDay << t;
@@ -272,6 +276,7 @@ inputMainData.each_with_index do |item,indexInMainData|
     llItem = []
     llItem << 0
     llItem << cityCode
+    llItem << cityName
     llItem << strDateCur
     llItem << bendiwaidiType
     llItem << waidiRegisterType
@@ -292,9 +297,9 @@ inputMainData.each_with_index do |item,indexInMainData|
     # 在对应哪条输入数据（索引0起）
     llItem << indexInMainData
 
-    # 是否事件限行
-    llItem << isEventOri
-   
+    llItem << rule
+    llItem << image
+     
     lstLL << llItem
     llCount = llCount + 1
   end
@@ -324,7 +329,7 @@ FileAccessor.Write(File.join(outputPath,"区域表.txt"),resultT)
 
 # 写主数据
 resultT = []
-resultT << %w(id city_code date license_attri register type date_off_r thirty_one_r holiday_r time number english_number area_id msg_id create_at update_at limit_Info_Id trrt)
+resultT << %w(id city_code city_name date license_attri register type date_off_r thirty_one_r holiday_r time number english_number area_id msg_id create_at update_at limit_Info_Id rules image)
 dicCityCodeTo_DateToData.each do |keyP,valueP|
   valueP.dicDateToData.each_value do |value|
     value.each do |ele|

@@ -6,7 +6,7 @@ class HomeController < ApplicationController
 	$guishudi_hash = {"1"=> "本地" ,"2"=>"外地","3"=>"本地外地"}
 	$dengji_hash = {"1"=> "不限登记车" ,"2"=>"只限登记车","3"=>"所有车"}
 	$leixing_hash =  {"1"=> "日期" ,"2"=>"星期","3"=>"日期单双","4"=>"休息日单双","5"=>"开四停四"}
-	$yingwen_hash = {"0"=> "按0处理" ,"4"=>"按4处理","10"=>"末尾数字","11"=>"只限英文","-1"=>"不限英文"}
+	$yingwen_hash = {"0"=> "按0处理" ,"1"=> "按单数处理","2"=>"按双数处理","4"=>"按4处理","10"=>"末尾数字","11"=>"只限英文","-1"=>"不限英文"}
 	$shijian_hash = {"1"=> "否" ,"2"=>"是"} 
 	$truefalse_hash = {"0"=> "不限制" ,"1"=>"限制"} 
 	$hash_array = [nil,nil,nil,nil,$guishudi_hash,$dengji_hash,$shijian_hash,$leixing_hash,$truefalse_hash,$truefalse_hash,$yingwen_hash,$truefalse_hash,nil,nil,nil,nil]

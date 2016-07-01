@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
-  get 'lldetail/main'
-
-	scope(:path => '/llweb') do 
+scope(:path => '/llweb') do 
 # get 'home/index'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
