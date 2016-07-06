@@ -3,12 +3,68 @@ require "rgeo"
 module GeoHelper
 	@factory = ::RGeo::Cartesian::simple_factory
 	class << self
+		# please input closed point array as polygon
 		def convert_polygon_with_hole(exterior_ring_, interior_ring_)
 			return nil unless is_ring?(exterior_ring_) && is_ring?(interior_ring_)
 			regular_direction exterior_ring_
 			regular_direction interior_ring_
 
 			cross_res = get_cross_points(exterior_ring_, interior_ring_)
+			return nil unless cross_res
+			get_polygons(exterior_ring_,interior_ring_,cross_res)
+		end
+
+		def get_polygons(exterior_ring_, interior_ring_,cross_point_wraps_)
+			calc_geom = lambda do |start_i_, end_i_,ring_,target_|
+				compare_v = start_i_ <=> end_i_
+				return nil if compare_v == 0
+				if compare_v < 0 
+					(start_i_+1 ..end_i_).each_with_index do |i|
+						target_ << ring_[i]
+					end
+				else
+					(start_i_+1 .. ring_.length-2).each_with_index do |i|
+						target_ << ring_[i]
+					end
+					(0 .. end_i_).each_with_index do |i|
+						target_ << ring_[i]
+					end
+				end
+			end			
+
+			get_geom = lambda do |ring_, point_wraps_|
+				point_wraps_.sort!{|a,b| a[:p].y <=> b[:p].y}
+				bottom = point_wraps_.first
+				top = point_wraps_.last
+				top_i = top[:i]
+				bottom_i = bottom[:i]
+				compare_v = top_i <=> bottom_i
+				return nil if compare_v == 0
+				# now input gem are counter_clockwise
+				left = []
+				right = []
+				
+				left << top[:p]
+				calc_geom.call(top_i,bottom_i, ring_, left)
+				left << bottom[:p] unless bottom[:b]
+
+				right << left.last
+				calc_geom.call(bottom_i,top_i,ring_,right)
+				right << top[:p] unless top[:b]						
+
+				return [left, right]
+			end
+
+			ex_geom = get_geom.call(exterior_ring_,cross_point_wraps_.first)
+			in_geom = get_geom.call(interior_ring_,cross_point_wraps_.last)
+			# now connect these to polygon
+			polygon_left = ex_geom.first+in_geom.first.reverse
+			polygon_left << polygon_left.first
+
+			polygon_right = ex_geom.last + in_geom.last.reverse
+			polygon_right << polygon_right.first
+
+			[polygon_left,polygon_right]
 		end
 
 		def get_cross_points(exterior_ring_, interior_ring_)
@@ -77,7 +133,7 @@ module GeoHelper
 			v_ = v_.to_f
 			a_diff = p_a_.x - v_
 			b_diff = p_b_.x - v_
-			return {b:true } if a_diff==0
+			return {b:true, p:p_a_} if a_diff==0
 			return nil if a_diff * b_diff >=0
 			dis_x = p_a_.x - p_b_.x
 			dis_y = p_a_.y - p_b_.y
@@ -91,28 +147,24 @@ end
 
 # test
 factory = GeoHelper.factory
-p1 = factory.point(1, 1)
-p2 = factory.point(2, 4)
-p3 = factory.point(5, 2)
-array = [p1,p2,p3,p1].reverse
-puts GeoHelper.convert_polygon_with_hole(array,array)
+point1 = factory.point(1, 0)
+point2 = factory.point(1, 4)
+point3 = factory.point(-2, 0)
+point4 = factory.point(-2, 4)
 
-puts GeoHelper.calc_cross_point(1.5,array)
+# puts GeoHelper.convert_polygon_with_hole(array,array)
+
+# puts GeoHelper.calc_cross_point(1.5,array)
 
 point5 = factory.point(0, 1)
 point6 = factory.point(0, 2)
 point7 = factory.point(-1, 1)
 
-# p GeoHelper.linear_interpolation(1.5,p1,p2)
+a_ex = [point1,point2,point3,point1]
+a_in = [point5,point6,point7,point5]
 
-# @factory = ::RGeo::Cartesian.simple_factory
-# p1 = @factory.point(1, 1)
-# p2 = @factory.point(2, 4)
-# p3 = @factory.point(5, 2)
-# array = [p1,p2,p3,p1].reverse
-# puts array
+puts GeoHelper.convert_polygon_with_hole(a_ex,a_in)
 
-# ring_ = @factory.line_string(array)
-
-# puts ::RGeo::Cartesian::Analysis.ring_direction(ring_)
-# factory = ::RGeo::Geographic::simple_mercator_factory
+# (0...0).each_with_index do |i|
+# 	puts i
+# end
