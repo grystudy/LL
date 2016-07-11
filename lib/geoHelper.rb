@@ -146,24 +146,24 @@ module GeoHelper
 end
 
 # test
-factory = GeoHelper.factory
-point1 = factory.point(1, 0)
-point2 = factory.point(1, 4)
-point3 = factory.point(-2, 0)
-point4 = factory.point(-2, 4)
+# factory = GeoHelper.factory
+# point1 = factory.point(1, 0)
+# point2 = factory.point(1, 4)
+# point3 = factory.point(-2, 0)
+# point4 = factory.point(-2, 4)
 
-# puts GeoHelper.convert_polygon_with_hole(array,array)
+# # puts GeoHelper.convert_polygon_with_hole(array,array)
 
-# puts GeoHelper.calc_cross_point(1.5,array)
+# # puts GeoHelper.calc_cross_point(1.5,array)
 
-point5 = factory.point(0, 1)
-point6 = factory.point(0, 2)
-point7 = factory.point(-1, 1)
+# point5 = factory.point(0, 1)
+# point6 = factory.point(0, 2)
+# point7 = factory.point(-1, 1)
 
-a_ex = [point1,point2,point3,point1]
-a_in = [point5,point6,point7,point5]
+# a_ex = [point1,point2,point3,point1]
+# a_in = [point5,point6,point7,point5]
 
-puts GeoHelper.convert_polygon_with_hole(a_ex,a_in)
+# puts GeoHelper.convert_polygon_with_hole(a_ex,a_in)
 
 # (0...0).each_with_index do |i|
 # 	puts i
