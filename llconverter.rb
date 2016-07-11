@@ -59,7 +59,7 @@ end
 
 # 读主数据
 # inputMainData = FileAccessor.Read(main_data_file_name)
-inputMainData = FileAccessor.ReadExcel(File.join(dataPath,"限行规则数据.xlsx"))
+inputMainData = FileAccessor.ReadExcel(File.join(dataPath,"车牌限行规则数据.xlsx"))
 inputMainData.delete_at(0)
 
 puts inputMainData.count
@@ -101,7 +101,7 @@ inputMainData.each_with_index do |item,indexInMainData|
  i_index_temp = i_index_temp + 1;
  timeRange = item[i_index_temp];
  i_index_temp = i_index_temp + 1;
- dateRange = item[i_index_temp];
+ dateRangeArrayStr = item[i_index_temp];
  i_index_temp = i_index_temp + 1;
  strArea = item[i_index_temp];
  i_index_temp = i_index_temp + 1;
@@ -151,26 +151,6 @@ inputMainData.each_with_index do |item,indexInMainData|
   end 
  end
 
-  # 日期范围
-  startDateStr = nil
-  endDateStr = nil;
-
-  if(dateRange && dateRange.empty? == false)
-    arrayT = dateRange.split('-')
-    if(arrayT.length == 2)
-     startDateStr,endDateStr = arrayT[0],arrayT[1]
-    end
-  else
-    dateRange = "无日期范围"
-  end               
-
-  if ( !startDateStr || !endDateStr)    
-    startDateStr = "20160101";
-    endDateStr = "20170101";         
-  end
-  startDate = convertDateTime.call(startDateStr);
-  endDate = convertDateTime.call(endDateStr);
-
   cityLL = nil
   if(dicCityCodeTo_DateToData.key?(cityCode))
     cityLL = dicCityCodeTo_DateToData[cityCode]
@@ -192,6 +172,36 @@ inputMainData.each_with_index do |item,indexInMainData|
 
   # 一周限行信息
   weekRtInfo = Array.new(7)
+
+  #daterange is modified to be an array
+  dateRangeArray = nil 
+  if dateRangeArrayStr && dateRangeArrayStr.empty? ==false
+    dateRangeArrayStr.delete!("<br>")
+    dateRangeArray = dateRangeArrayStr.split(';')
+  end
+
+  dateRangeArray = ["20160101-20170101"] if !dateRangeArray
+  dateRangeArray.each do |dateRange|
+  # 日期范围
+  startDateStr = nil
+  endDateStr = nil;
+
+  if(dateRange && dateRange.empty? == false)
+    arrayT = dateRange.split('-')
+    if(arrayT.length == 2)
+     startDateStr,endDateStr = arrayT[0],arrayT[1]
+    end
+  else
+    dateRange = "无日期范围"
+  end               
+
+  if ( !startDateStr || !endDateStr)    
+    startDateStr = "20160101";
+    endDateStr = "20170101";         
+  end
+  startDate = convertDateTime.call(startDateStr);
+  endDate = convertDateTime.call(endDateStr);
+
 
   # 遍历每一天
   while true
@@ -306,9 +316,11 @@ inputMainData.each_with_index do |item,indexInMainData|
     llCount = llCount + 1
   end
 
+end
+
   arrayTemp = []
   arrayTemp << indexInMainData
-  arrayTemp << dateRange
+  arrayTemp << dateRangeArrayStr
   arrayTemp << weekRtInfo.join(";")
   cityLL.lstLimitInfo << arrayTemp
 end
@@ -351,9 +363,9 @@ dicCityCodeTo_DateToData.each do |keyP,valueP|
 end
 FileAccessor.Write(File.join(outputPath,"关联数据.txt"),resultT)
 
-detail_file_name = File.join(outputPath,"限行描述数据.txt")
+detail_file_name = File.join(outputPath,"描述数据.txt")
 if !File.exist?(detail_file_name)
-  excel_file_name = File.join(dataPath,"限行描述数据.xlsx")
+  excel_file_name = File.join(dataPath,"车牌限行描述数据.xlsx")
   if !File.exist?(excel_file_name)
     puts "没有输入文件!"
     return 
