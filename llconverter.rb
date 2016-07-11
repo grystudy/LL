@@ -61,7 +61,7 @@ end
 # inputMainData = FileAccessor.Read(main_data_file_name)
 inputMainData = FileAccessor.ReadExcel(File.join(dataPath,"车牌限行规则数据.xlsx"))
 inputMainData.delete_at(0)
-
+inputMainData.delete_at(0)
 puts inputMainData.count
 dicCityCodeTo_DateToData = Hash.new
 allAreaCount = 0
@@ -306,8 +306,8 @@ inputMainData.each_with_index do |item,indexInMainData|
     llItem << strDateCur
     llItem << strDateCur
 
-    # 在对应哪条输入数据（索引0起）
-    llItem << indexInMainData
+    # 在对应哪条输入数据（索引1起）
+    llItem << indexInMainData+1
 
     llItem << rule
     llItem << image
@@ -315,11 +315,10 @@ inputMainData.each_with_index do |item,indexInMainData|
     lstLL << llItem
     llCount = llCount + 1
   end
-
 end
 
   arrayTemp = []
-  arrayTemp << indexInMainData
+  arrayTemp << indexInMainData+1
   arrayTemp << dateRangeArrayStr
   arrayTemp << weekRtInfo.join(";")
   cityLL.lstLimitInfo << arrayTemp
