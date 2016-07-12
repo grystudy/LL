@@ -63,15 +63,18 @@ file_name_array.each do |file_name_|
 					lst = hash_city[info_id]
 				end
 
-				record_wrap = AreaGeomWrap.new
+				record_wrap = AreaGeomWrap.new				
+				record_wrap.info_id = info_id
+				record_wrap.admcode = attri["AdmCode"]
 				record_wrap.geom = []
 				if record.geometry
 					record.geometry.each_with_index do |geo_,i_|
 						record_wrap.geom << geo_.points.map { |e|factory.point(e.y,e.x)  }
+					end				
+					if record_wrap.geom.length !=1	
+						puts "面要素打洞: #{file_name_} #{record_wrap.admcode} 边个数 #{record_wrap.geom.length }"  		
 					end
 				end
-				record_wrap.info_id = info_id
-				record_wrap.admcode = attri["AdmCode"]
 
 				info_wrap = InfoWrap.new
 				info_wrap.is_restrict = attri["TrafficRes"] > 0
@@ -103,13 +106,13 @@ POLYLINEGON= "2"
 # 4 生产工具生产的shp文件结果里面没有面+线，而且x，y是反的，y在前
 read_result.each do |hash_|
 	hash_.each do |infoid_,items_|
-		target = []
-		items_.each do |src_|
-			ok_add = true
+		target = [items_.first]
+		items_.each_with_index do |src_,i_t_|
+			ok_add = i_t_ != 0
 			target.each do |tar_|
-				if src_.geom.length==tar_.geom.length &&src_.geom.length==1
+				if i_t_!=0 && src_.geom.length==tar_.geom.length &&src_.geom.length==1
 					if factory.line_string(src_.geom[0]).rep_equals?(factory.line_string(tar_.geom[0]))
-						tar_.info_wrap_array << src_.info_wrap_array
+						tar_.info_wrap_array.concat(src_.info_wrap_array)
 						ok_add=false
 						break
 					end
@@ -120,13 +123,19 @@ read_result.each do |hash_|
 	  		in_same = false
 
 	  		try = lambda do |a_,b_|
-	  			if a_.geom.length == 1 && b_.geom.length ==2
+	  			if b_.geom.length ==2
+	  				obj_to_extend = b_ 	  			
+	  			else
+	  				return false
+	  			end
+
+	  			return true if i_t_ == 0
+
+	  			if a_.geom.length == 1 
 	  				if factory.line_string(a_.geom[0]).rep_equals?(factory.line_string(b_.geom[0]))
-	  					obj_to_extend = b_
 	  					ex_same =true
 	  					return true
 	  				elsif factory.line_string(a_.geom[0]).rep_equals?(factory.line_string(b_.geom[1]))
-	  					obj_to_extend = b_
 	  					in_same =true
 	  					return true
 	  				end
@@ -136,11 +145,11 @@ read_result.each do |hash_|
 
 	  		try.call(src_,tar_) unless try.call(tar_,src_)
 
-	  		if obj_to_extend		
+	  		if obj_to_extend	
 	  			class << obj_to_extend
 	  				attr_accessor :ex_auto
-	  				attr_accessor :in_auto
-	  			end unless obj_to_extend.respons_to?(:ex_auto)
+	  				attr_accessor :in_auto	  				
+	  			end unless obj_to_extend.respond_to?(:ex_auto)
 
 	  			obj_to_extend.ex_auto = false if ex_same
 	  			obj_to_extend.in_auto = false if in_same
@@ -171,9 +180,9 @@ read_result.each do |hash_|
 	  					info_t.geom_type = POLYLINE
 
 	  					geom_wrap = AreaGeomWrap.new
-	  					geom_wrap.infoid = src.infoid
-	  					geom_wrap.admcode = src.admcode
-	  					geom_wrap.geom = ori_geom.first
+	  					geom_wrap.info_id = src_.info_id
+	  					geom_wrap.admcode = src_.admcode
+	  					geom_wrap.geom = [ori_geom.first]
 	  					geom_wrap.info_wrap_array = [info_t]
 
 	  					items_to_add << geom_wrap
@@ -185,9 +194,9 @@ read_result.each do |hash_|
 	  					info_t.geom_type = POLYLINE
 
 	  					geom_wrap = AreaGeomWrap.new
-	  					geom_wrap.infoid = src.infoid
-	  					geom_wrap.admcode = src.admcode
-	  					geom_wrap.geom = ori_geom.last
+	  					geom_wrap.info_id = src_.info_id
+	  					geom_wrap.admcode = src_.admcode
+	  					geom_wrap.geom = [ori_geom.last]
 	  					geom_wrap.info_wrap_array = [info_t]
 
 	  					items_to_add << geom_wrap
@@ -198,16 +207,20 @@ read_result.each do |hash_|
 	  				info_t.geom_type = POLYGON
 
 	  				geom_wrap = AreaGeomWrap.new
-	  				geom_wrap.infoid = src.infoid
-	  				geom_wrap.admcode = src.admcode
-	  				geom_wrap.geom = splitted.left
+	  				geom_wrap.info_id = src_.info_id
+	  				geom_wrap.admcode = src_.admcode
+	  				geom_wrap.geom = [splitted.first]
 	  				geom_wrap.info_wrap_array = [info_t]
 
 	  				items_to_add << geom_wrap
 
-	  				src.geom = splitted.right
-	  				src.info_wrap_array = [info_t]
+	  				src_.geom = [splitted.last]
+	  				src_.info_wrap_array = [info_t]
+	  			else
+	  				puts "src_.respond_to?(:ex_auto) is false  #{src_.admcode}"
 	  			end
+	  		else
+	  			puts "split failed + #{src_.admcode}"
 	  		end
 	  	end
 	  end
@@ -221,3 +234,5 @@ json_res = read_result.to_json
 File.open("限行形状转换.txt", "w", :encoding => 'UTF-8') do |io|
 	io.write json_res
 end
+
+@read_result = read_result
