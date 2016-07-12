@@ -124,14 +124,14 @@ inputMainData.each_with_index do |item,indexInMainData|
  if(rNumber && rNumber.empty? == false)
   rNumSplitted = rNumber.split(';')
   case rNumSplitted.count
-    when 1
-      rNumSplitted = rNumSplitted.first.split(',');
-      if (rNumSplitted.count == 10 && isRTRiqi)                            
-        lstRNumEveryDay = rNumSplitted;
-      end
-    when 5
-      if (isRTRiqi)
-        lstRNumEveryDay = []
+  when 1
+    rNumSplitted = rNumSplitted.first.split(',');
+    if (rNumSplitted.count == 10 && isRTRiqi)                            
+      lstRNumEveryDay = rNumSplitted;
+    end
+  when 5
+    if (isRTRiqi)
+      lstRNumEveryDay = []
         # 兰州极特殊 1,6;2,7;3,8;4,9;5,0 车牌尾号为l、6的机动车，每月1日、6日、11日、16日、21日、26日、31日限行
         (1..10).each do |i|
           rNumSplitted.each do |t|              
@@ -148,8 +148,8 @@ inputMainData.each_with_index do |item,indexInMainData|
       elsif (isRTXingqi)                           
         lstRNumEveryDay = rNumSplitted;
       end
-  end 
- end
+    end 
+  end
 
   cityLL = nil
   if(dicCityCodeTo_DateToData.key?(cityCode))
@@ -179,19 +179,18 @@ inputMainData.each_with_index do |item,indexInMainData|
     dateRangeArrayStr.delete!("<br>")
     dateRangeArray = dateRangeArrayStr.split(';')
   end
-
-  dateRangeArray = ["20160101-20170101"] if !dateRangeArray
-  dateRangeArray.each do |dateRange|
   # 日期范围
-  startDateStr = nil
-  endDateStr = nil;
+  dateRangeArray = ["20160101-20170101"] if !dateRangeArray
+  dateRangeArray.each do |dateRange| 
+    startDateStr = nil
+    endDateStr = nil;
 
-  if(dateRange && dateRange.empty? == false)
-    arrayT = dateRange.split('-')
-    if(arrayT.length == 2)
-     startDateStr,endDateStr = arrayT[0],arrayT[1]
-    end
-  else
+    if(dateRange && dateRange.empty? == false)
+      arrayT = dateRange.split('-')
+      if(arrayT.length == 2)
+       startDateStr,endDateStr = arrayT[0],arrayT[1]
+     end
+   else
     dateRange = "无日期范围"
   end               
 
@@ -311,23 +310,23 @@ inputMainData.each_with_index do |item,indexInMainData|
 
     llItem << rule
     llItem << image
-     
+
     lstLL << llItem
     llCount = llCount + 1
   end
 end
 
-  arrayTemp = []
-  arrayTemp << indexInMainData+1
-  arrayTemp << dateRangeArrayStr
-  arrayTemp << weekRtInfo.join(";")
-  cityLL.lstLimitInfo << arrayTemp
+arrayTemp = []
+arrayTemp << indexInMainData+1
+arrayTemp << dateRangeArrayStr
+arrayTemp << weekRtInfo.join(";")
+cityLL.lstLimitInfo << arrayTemp
 end
 
 # 写区域数据
 resultT = []
 resultT << ["id", "city_code", "area"]
-  
+
 dicCityCodeTo_DateToData.each do |keyP,valueP|
   valueP.lstArea.each_with_index do |eleP,iP|
     newArrayT=[]
