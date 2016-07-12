@@ -146,11 +146,14 @@ read_result.each do |hash_|
 	  		try.call(src_,tar_) unless try.call(tar_,src_)
 
 	  		if obj_to_extend	
-	  			class << obj_to_extend
-	  				attr_accessor :ex_auto
-	  				attr_accessor :in_auto	  				
-	  			end unless obj_to_extend.respond_to?(:ex_auto)
-
+	  			unless obj_to_extend.respond_to?(:ex_auto)
+	  				class << obj_to_extend
+	  					attr_accessor :ex_auto
+	  					attr_accessor :in_auto	  
+	  				end 
+	  				obj_to_extend.ex_auto =true
+	  				obj_to_extend.in_auto = true
+	  			end
 	  			obj_to_extend.ex_auto = false if ex_same
 	  			obj_to_extend.in_auto = false if in_same
 	  			break
