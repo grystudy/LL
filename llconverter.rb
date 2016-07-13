@@ -73,65 +73,64 @@ end
 
 # 各字段
 inputMainData.each_with_index do |item,indexInMainData|
- i_index_temp = 0;
- i_index_temp = i_index_temp + 1;
- mesIndex = item[i_index_temp]; 
- i_index_temp = i_index_temp + 1;
- cityCode = item[i_index_temp];
- i_index_temp = i_index_temp + 1;
- cityName = item[i_index_temp];
- i_index_temp = i_index_temp + 1;
- chepaihao = item[i_index_temp];
- i_index_temp = i_index_temp + 1;
- bendiwaidiType = item[i_index_temp];
- i_index_temp = i_index_temp + 1;
- waidiRegisterType = item[i_index_temp];
- i_index_temp = i_index_temp + 1;
- rType = item[i_index_temp];
- i_index_temp = i_index_temp + 1;
- isWorkWeekendR = item[i_index_temp] == "1";
- i_index_temp = i_index_temp + 1;
- isHolidayR = item[i_index_temp] == "1";
- i_index_temp = i_index_temp + 1;
- englishR = item[i_index_temp];
- i_index_temp = i_index_temp + 1;
- isThirtyoneR = item[i_index_temp] == "1";
- i_index_temp = i_index_temp + 1;
- rNumber = item[i_index_temp];
- i_index_temp = i_index_temp + 1;
- timeRange = item[i_index_temp];
- i_index_temp = i_index_temp + 1;
- dateRangeArrayStr = item[i_index_temp];
- i_index_temp = i_index_temp + 1;
- strArea = item[i_index_temp];
- i_index_temp = i_index_temp + 1;
- rule = item[i_index_temp];
- i_index_temp = i_index_temp + 1;
- image = item[i_index_temp];
+  i_index_temp = 0;
+  main_data_id = item[i_index_temp] 
+  i_index_temp = i_index_temp + 1;
+  mesIndex = item[i_index_temp]; 
+  i_index_temp = i_index_temp + 1;
+  cityCode = item[i_index_temp];
+  i_index_temp = i_index_temp + 1;
+  cityName = item[i_index_temp];
+  i_index_temp = i_index_temp + 1;
+  chepaihao = item[i_index_temp];
+  i_index_temp = i_index_temp + 1;
+  bendiwaidiType = item[i_index_temp];
+  i_index_temp = i_index_temp + 1;
+  waidiRegisterType = item[i_index_temp];
+  i_index_temp = i_index_temp + 1;
+  rType = item[i_index_temp];
+  i_index_temp = i_index_temp + 1;
+  isWorkWeekendR = item[i_index_temp] == "1";
+  i_index_temp = i_index_temp + 1;
+  isHolidayR = item[i_index_temp] == "1";
+  i_index_temp = i_index_temp + 1;
+  englishR = item[i_index_temp];
+  i_index_temp = i_index_temp + 1;
+  isThirtyoneR = item[i_index_temp] == "1";
+  i_index_temp = i_index_temp + 1;
+  rNumber = item[i_index_temp];
+  i_index_temp = i_index_temp + 1;
+  timeRange = item[i_index_temp];
+  i_index_temp = i_index_temp + 1;
+  dateRangeArrayStr = item[i_index_temp];
+  i_index_temp = i_index_temp + 1;
+  strArea = item[i_index_temp];
+  i_index_temp = i_index_temp + 1;
+  rule = item[i_index_temp];
+  i_index_temp = i_index_temp + 1;
+  image = item[i_index_temp];
 
- isRTRiqi = rType == "1";
- isRTXingqi = rType == "2";
- isRTRiqiDanshuang = rType == "3"; # 按车牌尾号分单双日通行，车牌尾号最后一位阿拉伯数字为1、3、5、7、9的车辆只准许单日通行；车牌尾号最后一位阿拉伯数字为0、2、4、6、8的车辆只准许双日通行
- isRTXiuxiriDanShuang = rType == "4"; # 杭州
- isRTRun4Pause4 = rType == "5"; # 贵阳
+  isRTRiqi = rType == "1";
+  isRTXingqi = rType == "2";
+  isRTRiqiDanshuang = rType == "3"; # 按车牌尾号分单双日通行，车牌尾号最后一位阿拉伯数字为1、3、5、7、9的车辆只准许单日通行；车牌尾号最后一位阿拉伯数字为0、2、4、6、8的车辆只准许双日通行
+  isRTXiuxiriDanShuang = rType == "4"; # 杭州
+  isRTRun4Pause4 = rType == "5"; # 贵阳
 
- # danhaoR = "0,2,4,6,8"
- # shuanghaoR = "1,3,5,7,9"
- danhaoR = "双号"
- shuanghaoR = "单号"
- lstRNumEveryDay = nil
- # 根据格式处理号牌列表
- if(rNumber && rNumber.empty? == false)
-  rNumSplitted = rNumber.split(';')
-  case rNumSplitted.count
-  when 1
-    rNumSplitted = rNumSplitted.first.split(',');
-    if (rNumSplitted.count == 10 && isRTRiqi)                            
-      lstRNumEveryDay = rNumSplitted;
-    end
-  when 5
-    if (isRTRiqi)
-      lstRNumEveryDay = []
+  danhaoR = "双号"
+  shuanghaoR = "单号"
+  lstRNumEveryDay = nil
+  # 根据格式处理号牌列表
+  if(rNumber && rNumber.empty? == false)
+    rNumSplitted = rNumber.split(';')
+    case rNumSplitted.count
+    when 1
+      rNumSplitted = rNumSplitted.first.split(',');
+      if (rNumSplitted.count == 10 && isRTRiqi)                            
+        lstRNumEveryDay = rNumSplitted;
+      end
+    when 5
+      if (isRTRiqi)
+        lstRNumEveryDay = []
         # 兰州极特殊 1,6;2,7;3,8;4,9;5,0 车牌尾号为l、6的机动车，每月1日、6日、11日、16日、21日、26日、31日限行
         (1..10).each do |i|
           rNumSplitted.each do |t|              
@@ -179,7 +178,7 @@ inputMainData.each_with_index do |item,indexInMainData|
     dateRangeArrayStr.delete!("<br>")
     dateRangeArray = dateRangeArrayStr.split(';')
   end
-  # 日期范围
+  
   dateRangeArray = ["20160101-20170101"] if !dateRangeArray
   dateRangeArray.each do |dateRange| 
     startDateStr = nil
@@ -188,139 +187,139 @@ inputMainData.each_with_index do |item,indexInMainData|
     if(dateRange && dateRange.empty? == false)
       arrayT = dateRange.split('-')
       if(arrayT.length == 2)
-       startDateStr,endDateStr = arrayT[0],arrayT[1]
-     end
-   else
-    dateRange = "无日期范围"
-  end               
-
-  if ( !startDateStr || !endDateStr)    
-    startDateStr = "20160101";
-    endDateStr = "20170101";         
-  end
-  startDate = convertDateTime.call(startDateStr);
-  endDate = convertDateTime.call(endDateStr);
-
-
-  # 遍历每一天
-  while true
-    if startDate > endDate
-      break
-    end
-    strDateCur = startDate.strftime("%Y%m%d")
-    curDay = startDate.day
-    curWDay = startDate.wday
-    startDate = startDate + 1
-
-    lstLL = nil 
-    if !cityLL.dicDateToData.key?(strDateCur)
-      lstLL = []
-      cityLL.dicDateToData.store(strDateCur,lstLL)
+        startDateStr,endDateStr = arrayT[0],arrayT[1]
+      end
     else
-      lstLL = cityLL.dicDateToData[strDateCur]
+      dateRange = "无日期范围"
+    end               
+
+    if(!startDateStr || !endDateStr)    
+      startDateStr = "20160101";
+      endDateStr = "20170101";         
     end
-    
-    # 开始做限行item
-    # 判断这天是否限制    
-    canIgnore = false
+    startDate = convertDateTime.call(startDateStr);
+    endDate = convertDateTime.call(endDateStr);
 
-    case judgeWorkdayType.call(strDateCur)
-    when Workday
-      if isRTXiuxiriDanShuang
-        canIgnore = true
+    # 遍历每一天
+    while true
+      if startDate > endDate
+        break
       end
-    when WorkWeekend
-      if !isWorkWeekendR
-        canIgnore = true
-      end
-    when RestWorkday
-      if !isHolidayR
-        canIgnore = true
-      end
-    when Weekend
-      if !isHolidayR
-        canIgnore = true
-      end
-    end
+      strDateCur = startDate.strftime("%Y%m%d")
+      curDay = startDate.day
+      curWDay = startDate.wday
+      startDate = startDate + 1
 
-    if(!isThirtyoneR && curDay == 31)
-      canIgnore = true
-    end
-
-    # 取限制什么号
-    rNumberCurDay = "所有号牌"
-    if isRTRiqi
-      if(lstRNumEveryDay)
-        t = curDay % 10
-        t = t==0 ? 10 : t
-
-        rNumberCurDay = lstRNumEveryDay[t-1]
+      lstLL = nil 
+      if !cityLL.dicDateToData.key?(strDateCur)
+        lstLL = []
+        cityLL.dicDateToData.store(strDateCur,lstLL)
+      else
+        lstLL = cityLL.dicDateToData[strDateCur]
       end
-    elsif isRTXingqi
-      if lstRNumEveryDay
-        t = curWDay % 7
-        if [0,6].include?(t)
+
+      # 开始做限行item
+      # 判断这天是否限制    
+      canIgnore = false
+
+      case judgeWorkdayType.call(strDateCur)
+      when Workday
+        if isRTXiuxiriDanShuang
           canIgnore = true
         end
-
-        rNumberCurDay = lstRNumEveryDay[t-1]
+      when WorkWeekend
+        if !isWorkWeekendR
+          canIgnore = true
+        end
+      when RestWorkday
+        if !isHolidayR
+          canIgnore = true
+        end
+      when Weekend
+        if !isHolidayR
+          canIgnore = true
+        end
       end
-    elsif isRTRiqiDanshuang || isRTXiuxiriDanShuang
-      t = curDay % 2
-      rNumberCurDay = t == 0 ? shuanghaoR : danhaoR
-    elsif isRTRun4Pause4
-      rNumberCurDay = "开四停四"
+
+      if(!isThirtyoneR && curDay == 31)
+        canIgnore = true
+      end
+
+      rNumberCurDay = "所有号牌"
+      if isRTRiqi
+        if(lstRNumEveryDay)
+          t = curDay % 10
+          t = t==0 ? 10 : t
+
+          rNumberCurDay = lstRNumEveryDay[t-1]
+        end
+      elsif isRTXingqi
+        if lstRNumEveryDay
+          t = curWDay % 7
+          if [0,6].include?(t)
+            canIgnore = true
+          end
+
+          rNumberCurDay = lstRNumEveryDay[t-1]
+        end
+      elsif isRTRiqiDanshuang || isRTXiuxiriDanShuang
+        t = curDay % 2
+        rNumberCurDay = t == 0 ? shuanghaoR : danhaoR
+      elsif isRTRun4Pause4
+        rNumberCurDay = "开四停四"
+      end
+
+      if(rNumberCurDay == "-1")
+        canIgnore = true # -1表示不限号
+      end
+
+      if canIgnore
+        rNumberCurDay = "不限号"
+      end
+
+      if(!weekRtInfo[curWDay])
+        weekRtInfo[curWDay] = rNumberCurDay
+      end
+
+      llItem = []
+      llItem << 0
+      llItem << cityCode
+      llItem << cityName
+      llItem << strDateCur
+      llItem << bendiwaidiType
+      llItem << waidiRegisterType
+      llItem << rType
+      llItem << (isWorkWeekendR ? "1" : "0")
+      llItem << (isThirtyoneR ? "1" : "0")
+      llItem << (isHolidayR ? "1" : "0")
+      llItem << timeRange
+      llItem << rNumberCurDay
+      llItem << englishR
+      llItem << getAreaId.call(cityCode.to_i,areaIndex)
+      llItem << mesIndex
+
+      llItem << strDateCur
+      llItem << strDateCur
+
+      llItem << main_data_id
+
+      llItem << rule
+      llItem << image
+
+      lstLL << llItem
+      llCount = llCount + 1
     end
-
-    if(rNumberCurDay == "-1")
-      canIgnore = true # -1表示不限号
-    end
-
-    if canIgnore
-      rNumberCurDay = "不限号"
-    end
-
-    if(!weekRtInfo[curWDay])
-      weekRtInfo[curWDay] = rNumberCurDay
-    end
-
-    llItem = []
-    llItem << 0
-    llItem << cityCode
-    llItem << cityName
-    llItem << strDateCur
-    llItem << bendiwaidiType
-    llItem << waidiRegisterType
-    llItem << rType
-    llItem << (isWorkWeekendR ? "1" : "0")
-    llItem << (isThirtyoneR ? "1" : "0")
-    llItem << (isHolidayR ? "1" : "0")
-    llItem << timeRange
-    llItem << rNumberCurDay
-    llItem << englishR
-    llItem << getAreaId.call(cityCode.to_i,areaIndex)
-    llItem << mesIndex
-
-    # 数据库需要两列时间?
-    llItem << strDateCur
-    llItem << strDateCur
-
-    # 在对应哪条输入数据（索引1起）
-    llItem << indexInMainData+1
-
-    llItem << rule
-    llItem << image
-
-    lstLL << llItem
-    llCount = llCount + 1
   end
-end
 
-arrayTemp = []
-arrayTemp << indexInMainData+1
-arrayTemp << dateRangeArrayStr
-arrayTemp << weekRtInfo.join(";")
-cityLL.lstLimitInfo << arrayTemp
+  arrayTemp = []
+  arrayTemp << main_data_id
+  arrayTemp << dateRangeArrayStr
+  arrayTemp << weekRtInfo.join(";")
+  cityLL.lstLimitInfo << arrayTemp
+
+  if main_data_id != (indexInMainData +1).to_s
+    puts "发现有某条限行ID错误！！！"
+  end
 end
 
 # 写区域数据

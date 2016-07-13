@@ -6,4 +6,8 @@
 *.css~
 /llInputWeb/public/input
 /llInputWeb/public/output
+/LLData
+/lib/areaRes
+/lib/限行形状转换.txt
+
 
