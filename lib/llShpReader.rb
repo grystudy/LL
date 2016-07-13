@@ -53,7 +53,7 @@ file_name_array.each do |file_name_|
 		begin
 			next if !file
 			file.each do |record|
-				next if !record || !record.geometry 
+				break if !record || !record.geometry 
 				attri = record.attributes
 				info_id = attri["RINForID"]
 				if !hash_city.key?(info_id)
@@ -70,10 +70,7 @@ file_name_array.each do |file_name_|
 				if record.geometry
 					record.geometry.each_with_index do |geo_,i_|
 						record_wrap.geom << geo_.points.map { |e|factory.point(e.y,e.x)  }
-					end				
-					if record_wrap.geom.length !=1	
-						puts "面要素打洞: #{file_name_} #{record_wrap.admcode} 边个数 #{record_wrap.geom.length }"  		
-					end
+					end			
 				end
 
 				info_wrap = InfoWrap.new
@@ -81,6 +78,22 @@ file_name_array.each do |file_name_|
 				info_wrap.geom_type = attri["FeatureTyp"]
 
 				record_wrap.info_wrap_array = [info_wrap]
+
+				if record_wrap.geom.length ==3	
+					puts "面要素: #{file_name_} #{record_wrap.admcode} 边个数 #{record_wrap.geom.length }"  		
+					(1..2).each do |i_geo_|
+						temp_wrap = AreaGeomWrap.new
+						temp_wrap.info_id = record_wrap.info_id
+						temp_wrap.admcode = record_wrap.admcode
+						temp_wrap.geom = [record_wrap.geom[i_geo_]]
+						temp_wrap.info_wrap_array = record_wrap.info_wrap_array
+						lst << temp_wrap
+					end
+
+					record_wrap.geom.pop 
+					record_wrap.geom.pop
+				end
+
 				lst << record_wrap
 			end
 		rescue NoMethodError => e
@@ -229,13 +242,6 @@ read_result.each do |hash_|
 	  end
 	  items_[items_.length,0] = items_to_add
 	end
-end
-
-# require 'json'
-json_res = read_result.to_json
-# obj = JSON.parse json_res
-File.open("限行形状转换.txt", "w", :encoding => 'UTF-8') do |io|
-	io.write json_res
 end
 
 @read_result = read_result

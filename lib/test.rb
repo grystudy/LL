@@ -42,5 +42,16 @@ data_to_excel = []
 			Dir.mkdir(File.dirname(fileName))
 		end
 		write_xlsx(fileName,data_to_excel)
+
+		fileName = File.join("areaRes/json","#{key_}.txt")
+		dirName=File.dirname(fileName)  	  
+		if(!File.directory?(dirName))
+			Dir.mkdir(File.dirname(fileName))
+		end
+		File.open(fileName, "w", :encoding => 'UTF-8') do |io|
+			res_str = hash_.to_json.delete "\\"
+			# p res_str
+			io.write res_str
+		end
 	end
 end
