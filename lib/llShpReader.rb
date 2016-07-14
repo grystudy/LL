@@ -53,7 +53,16 @@ file_name_array.each do |file_name_|
 		begin
 			next if !file
 			file.each do |record|
-				break if !record || !record.geometry 
+				if !record
+					puts "no record error !"
+					break
+				end
+
+				if !record.geometry
+					puts "ReRead #{file_name_} ------> #{record.index}"
+					record = file[record.index]
+				end
+				
 				attri = record.attributes
 				info_id = attri["RINForID"]
 				if !hash_city.key?(info_id)
