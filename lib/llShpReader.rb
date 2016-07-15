@@ -46,6 +46,8 @@ class ::RGeo::Cartesian::PointImpl
 	end
 end
 
+Second_Per_Hour = (60 * 60).to_f
+
 read_result = []
 file_name_array.each do |file_name_|
 	RGeo::Shapefile::Reader.open(file_name_[:path]) do |file|
@@ -78,7 +80,7 @@ file_name_array.each do |file_name_|
 				record_wrap.geom = []
 				if record.geometry
 					record.geometry.each_with_index do |geo_,i_|
-						record_wrap.geom << geo_.points.map { |e|factory.point(e.y,e.x)  }
+						record_wrap.geom << geo_.points.map { |e|factory.point(e.x/Second_Per_Hour,e.y/Second_Per_Hour)  }
 					end			
 				end
 
@@ -125,7 +127,7 @@ POLYLINEGON= "2"
 # 2 发现这条是面，且没有线，则自动改成面+线限行,ignore double_ring
 # 1 发现有相同形状点的面和线，合成一个,igonre double_ring
 # 3 发现带洞的，拆分
-# 4 生产工具生产的shp文件结果里面没有面+线，而且x，y是反的，y在前
+# 4 生产工具生产的shp文件结果里面没有面+线
 read_result.each do |hash_|
 	hash_.each do |infoid_,items_|
 		target = [items_.first]
