@@ -318,7 +318,7 @@ inputMainData.each_with_index do |item,indexInMainData|
   cityLL.lstLimitInfo << arrayTemp
 
   if main_data_id != (indexInMainData +1).to_s
-    puts "发现有某条限行ID错误！！！"
+    puts "发现有某条限行ID错误！！！ + #{main_data_id} not equal to the number #{indexInMainData} plus one"
   end
 end
 

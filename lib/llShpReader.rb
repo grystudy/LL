@@ -1,5 +1,5 @@
-shp_path = "/home/aa/myGit/SHP"
-
+shp_path = "/home/aa/myGit/SHP/0715"
+puts "ready to parse #{shp_path}"
 file_name_array = []
 
 Dir.entries(shp_path).each do |dirNameT|
@@ -37,7 +37,7 @@ class AreaGeomWrap
 end
 
 require 'rgeo/shapefile'
-require File.join('/home/aa/myGit/LL/lib',"geoHelper.rb")
+require File.join('./',"geoHelper.rb")
 factory = GeoHelper.factory
 
 class ::RGeo::Cartesian::PointImpl
@@ -90,7 +90,9 @@ file_name_array.each do |file_name_|
 
 				record_wrap.info_wrap_array = [info_wrap]
 
-				if record_wrap.geom.length ==3	
+				if record_wrap.geom.length ==2
+					puts "maybe polygon with hole: #{file_name_} #{record_wrap.admcode} 边个数 #{record_wrap.geom.length }"
+				elsif record_wrap.geom.length ==3	
 					puts "面要素: #{file_name_} #{record_wrap.admcode} 边个数 #{record_wrap.geom.length }"  		
 					(1..2).each do |i_geo_|
 						temp_wrap = AreaGeomWrap.new

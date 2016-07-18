@@ -163,8 +163,21 @@ end
 # a_ex = [point1,point2,point3,point1]
 # a_in = [point5,point6,point7,point5]
 
-# puts GeoHelper.convert_polygon_with_hole(a_ex,a_in)
+# # puts GeoHelper.convert_polygon_with_hole(a_ex,a_in)
 
 # (0...0).each_with_index do |i|
 # 	puts i
 # end
+
+# mercator = ::RGeo::Geographic::simple_mercator_factory
+# # a_ex.shift
+# line1 = mercator.linear_ring a_ex
+# line2 = mercator.linear_ring a_in
+
+# # require "/home/aa/myGit/rgeo/lib/rgeo/geographic/projected_feature_classes.rb"
+
+# polygon1 = mercator.polygon line1
+# polygon2 = mercator.polygon line2
+#  p polygon1._validate_geometry
+# p polygon2.distance point1
+ # puts polygon1.contains? polygon2

@@ -49,7 +49,7 @@ data_to_excel = []
 			Dir.mkdir(File.dirname(fileName))
 		end
 		File.open(fileName, "w", :encoding => 'UTF-8') do |io|
-			res_str = hash_.to_json.delete "\\"
+			res_str = value_.to_json.delete "\\"
 			# p res_str
 			io.write res_str
 		end
