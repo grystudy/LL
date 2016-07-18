@@ -122,9 +122,9 @@ end
 # read_result 目前是一个hash的数组，hash(infoid=>items)的value是一个数组，1需要合并这个数组，即把相同形状点的polyline和polygon合并 2需要将环状polygon拆分
 # p read_result
 
-POLYLINE = "0"
-POLYGON = "1"
-POLYLINEGON= "2"
+POLYLINE = 0
+POLYGON = 1
+POLYLINEGON= 2
 
 # 2 发现这条是面，且没有线，则自动改成面+线限行,ignore double_ring
 # 1 发现有相同形状点的面和线，合成一个,igonre double_ring
@@ -140,6 +140,7 @@ read_result.each do |hash_|
 					if factory.line_string(src_.geom[0]).rep_equals?(factory.line_string(tar_.geom[0]))
 						tar_.info_wrap_array.concat(src_.info_wrap_array)
 						ok_add=false
+						puts "merge because same geo: #{infoid_}"
 						break
 					end
 				end
@@ -195,7 +196,10 @@ read_result.each do |hash_|
 	  items_.each do |src_|
 	  	if src_.info_wrap_array.length==1 && src_.geom.length == 1
 	  		t = src_.info_wrap_array.first
-	  		t.geom_type = POLYLINEGON if t.geom_type == POLYGON && t.is_restrict
+	  		if t.geom_type == POLYGON && t.is_restrict
+	  			t.geom_type = POLYLINEGON 
+	  			puts "auto-set to polygon+polyline #{src_.info_id}"
+	  		end
 	  	end
 
 	  	if src_.geom.length == 2
