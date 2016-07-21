@@ -32,7 +32,7 @@ class AreaGeomWrap
 	attr_accessor :admcode
 
 	def to_json(*a)
-		{Geo:geom.to_json,restInfo: info_wrap_array.to_json}.to_json()
+		{Geo:geom,restInfo: info_wrap_array}.to_json()
 	end
 end
 
