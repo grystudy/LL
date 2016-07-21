@@ -42,7 +42,7 @@ factory = GeoHelper.factory
 
 class ::RGeo::Cartesian::PointImpl
 	def to_json(*a)
-		{x: x,y: y}.to_json
+		{x: x.round(7),y: y.round(7)}.to_json
 	end
 end
 
@@ -91,15 +91,15 @@ file_name_array.each do |file_name_|
 				record_wrap.info_wrap_array = [info_wrap]
 
 				if record_wrap.geom.length ==2
-					puts "maybe polygon with hole: #{file_name_} #{record_wrap.admcode} 边个数 #{record_wrap.geom.length }"
+					puts "maybe polygon with hole: 限行信息#{record_wrap.info_id} #{file_name_[:city]} #{record_wrap.admcode} 边个数 #{record_wrap.geom.length }"
 				elsif record_wrap.geom.length ==3	
-					puts "面要素: #{file_name_} #{record_wrap.admcode} 边个数 #{record_wrap.geom.length }"  		
+					puts "面要素: 限行信息#{record_wrap.info_id} #{file_name_[:city]} #{record_wrap.admcode} 边个数 #{record_wrap.geom.length }"  		
 					(1..2).each do |i_geo_|
 						temp_wrap = AreaGeomWrap.new
 						temp_wrap.info_id = record_wrap.info_id
 						temp_wrap.admcode = record_wrap.admcode
 						temp_wrap.geom = [record_wrap.geom[i_geo_]]
-						temp_wrap.info_wrap_array = record_wrap.info_wrap_array
+						temp_wrap.info_wrap_array =  [info_wrap]
 						lst << temp_wrap
 					end
 
@@ -138,7 +138,11 @@ read_result.each do |hash_|
 			target.each do |tar_|
 				if i_t_!=0 && src_.geom.length==tar_.geom.length &&src_.geom.length==1
 					if factory.line_string(src_.geom[0]).rep_equals?(factory.line_string(tar_.geom[0]))
-						tar_.info_wrap_array.concat(src_.info_wrap_array)
+						info_wrap_to_add = src_.info_wrap_array[0]
+						tar_.info_wrap_array << info_wrap_to_add if !tar_.info_wrap_array.index do |test_t_|
+							test_t_.is_restrict == info_wrap_to_add.is_restrict &&
+							test_t_.geom_type == info_wrap_to_add.geom_type
+						end
 						ok_add=false
 						puts "merge because same geo: #{infoid_}"
 						break

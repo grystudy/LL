@@ -24,9 +24,9 @@ def output(key_,value_)
 		array_append = []
 		array_append << item_wrap_.info_id
 		item_wrap_.info_wrap_array.each_with_index do |info_wrap_,ii_|
-			array_append << ii_
+			array_append << "信息索引 #{ii_}"
 			array_append << info_wrap_.is_restrict ? "限" : "不限"
-			array_append << info_wrap_.geom_type
+			array_append << "geom#{info_wrap_.geom_type}"
 		end
 		array_t[0].concat(array_append)			
 		data_to_excel.concat array_t
