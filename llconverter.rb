@@ -94,6 +94,10 @@ inputMainData.each_with_index do |item,indexInMainData|
   i_index_temp = i_index_temp + 1;
   isHolidayR = item[i_index_temp] == "1";
   i_index_temp = i_index_temp + 1;
+  is_weekend_r = item[i_index_temp] == "1";
+  i_index_temp = i_index_temp + 1;
+  is_weekday_r = item[i_index_temp] == "1";
+  i_index_temp = i_index_temp + 1;
   englishR = item[i_index_temp];
   i_index_temp = i_index_temp + 1;
   isThirtyoneR = item[i_index_temp] == "1";
@@ -113,7 +117,7 @@ inputMainData.each_with_index do |item,indexInMainData|
   isRTRiqi = rType == "1";
   isRTXingqi = rType == "2";
   isRTRiqiDanshuang = rType == "3"; # 按车牌尾号分单双日通行，车牌尾号最后一位阿拉伯数字为1、3、5、7、9的车辆只准许单日通行；车牌尾号最后一位阿拉伯数字为0、2、4、6、8的车辆只准许双日通行
-  isRTXiuxiriDanShuang = rType == "4"; # 杭州
+  #isRTXiuxiriDanShuang = rType == "4"; # 杭州
   isRTRun4Pause4 = rType == "5"; # 贵阳
 
   danhaoR = "双号"
@@ -224,7 +228,7 @@ inputMainData.each_with_index do |item,indexInMainData|
 
       case judgeWorkdayType.call(strDateCur)
       when Workday
-        if isRTXiuxiriDanShuang
+        if !is_weekday_r
           canIgnore = true
         end
       when WorkWeekend
@@ -236,7 +240,7 @@ inputMainData.each_with_index do |item,indexInMainData|
           canIgnore = true
         end
       when Weekend
-        if !isHolidayR
+        if !is_weekend_r
           canIgnore = true
         end
       end
@@ -262,7 +266,7 @@ inputMainData.each_with_index do |item,indexInMainData|
 
           rNumberCurDay = lstRNumEveryDay[t-1]
         end
-      elsif isRTRiqiDanshuang || isRTXiuxiriDanShuang
+      elsif isRTRiqiDanshuang
         t = curDay % 2
         rNumberCurDay = t == 0 ? shuanghaoR : danhaoR
       elsif isRTRun4Pause4
