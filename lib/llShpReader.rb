@@ -1,4 +1,4 @@
-shp_path = "/home/aa/myGit/SHP/0715"
+shp_path = @shp_file_path
 puts "ready to parse #{shp_path}"
 file_name_array = []
 

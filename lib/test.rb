@@ -50,6 +50,7 @@ def output(key_,value_)
 	end
 end
 
+@shp_file_path = "/home/aa/myGit/SHP/Scar_GD15Q4_v2.0/限行"
 require File.join(File.dirname(__FILE__),"llShpReader.rb")
 return unless @read_result
 
