@@ -296,6 +296,8 @@ inputMainData.each_with_index do |item,indexInMainData|
       llItem << (isWorkWeekendR ? "1" : "0")
       llItem << (isThirtyoneR ? "1" : "0")
       llItem << (isHolidayR ? "1" : "0")
+      llItem << (is_weekend_r ? "1" : "0")
+      llItem << (is_weekday_r ? "1" : "0")
       llItem << timeRange
       llItem << rNumberCurDay
       llItem << englishR
@@ -344,7 +346,7 @@ FileAccessor.Write(File.join(outputPath,"区域表.txt"),resultT)
 
 # 写主数据
 resultT = []
-resultT << %w(id city_code city_name date license_attri register type date_off_r thirty_one_r holiday_r time number english_number area_id msg_id create_at update_at limit_Info_Id rules image)
+resultT << %w(id city_code city_name date license_attri register type date_off_r thirty_one_r holiday_r weekend_r weekday_r time number english_number area_id msg_id create_at update_at limit_Info_Id rules image)
 dicCityCodeTo_DateToData.each do |keyP,valueP|
   valueP.dicDateToData.each_value do |value|
     value.each do |ele|
