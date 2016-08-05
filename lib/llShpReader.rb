@@ -21,7 +21,7 @@ class InfoWrap
 	attr_accessor :geom_type
 
 	def to_json(*a)
-		{IsRestrict: is_restrict, shapetype:geom_type}.to_json()
+		{isrestrict: is_restrict, shapetype:geom_type}.to_json()
 	end
 end
 
@@ -32,7 +32,7 @@ class AreaGeomWrap
 	attr_accessor :admcode
 
 	def to_json(*a)
-		{Geo:geom,restInfo: info_wrap_array}.to_json()
+		{geo:geom,info: info_wrap_array}.to_json()
 	end
 end
 
