@@ -278,7 +278,7 @@ inputMainData.each_with_index do |item,indexInMainData|
       end
 
       if canIgnore
-        rNumberCurDay = "不限号"
+        rNumberCurDay = "不限行"
       end
 
       if(!weekRtInfo[curWDay])
@@ -286,7 +286,7 @@ inputMainData.each_with_index do |item,indexInMainData|
       end
 
       llItem = []
-      llItem << 0
+      llItem << main_data_id
       llItem << cityCode
       llItem << cityName
       llItem << strDateCur
@@ -307,7 +307,7 @@ inputMainData.each_with_index do |item,indexInMainData|
       llItem << strDateCur
       llItem << strDateCur
 
-      llItem << main_data_id
+      llItem << indexInMainData
 
       llItem << rule
       llItem << image
@@ -318,14 +318,14 @@ inputMainData.each_with_index do |item,indexInMainData|
   end
 
   arrayTemp = []
-  arrayTemp << main_data_id
+  arrayTemp << indexInMainData
   arrayTemp << dateRangeArrayStr
   arrayTemp << weekRtInfo.join(";")
   cityLL.lstLimitInfo << arrayTemp
 
-  if main_data_id != (indexInMainData +1).to_s
-    puts "发现有某条限行ID错误！！！ + #{main_data_id} not equal to the number #{indexInMainData} plus one"
-  end
+  # if main_data_id != (indexInMainData +1).to_s
+  #   puts "发现有某条限行ID错误！！！ + #{main_data_id} not equal to the number #{indexInMainData} plus one"
+  # end
 end
 
 # 写区域数据
