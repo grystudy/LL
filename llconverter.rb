@@ -25,8 +25,8 @@ judgeIsWeekend = lambda do |str|
   [6,0].include?(convertDateTime.call(str).wday)
 end
 
-dataPath = FileAccessor.CalcDataPath
-
+# dataPath = FileAccessor.CalcDataPath
+dataPath = '/home/aa/mySvn/800.限行/成果物/发布成果物/20160824'
 # 输入文件转换
 # holiday_file_name = File.join(dataPath,InputHoliday)
 # main_data_file_name = File.join(dataPath,InputMainData)
@@ -311,6 +311,10 @@ inputMainData.each_with_index do |item,indexInMainData|
 
       llItem << rule
       llItem << image
+
+      big_jpg_path = File.join(dataPath,image+"big.jpg")
+      small_jpg_path = File.join(dataPath,image+"small.jpg")
+      puts "#{main_data_id} pictures not found : #{image}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" unless File.exist?(big_jpg_path)&&File.exist?(small_jpg_path)      
 
       lstLL << llItem
       llCount = llCount + 1

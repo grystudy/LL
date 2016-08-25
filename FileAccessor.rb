@@ -69,7 +69,8 @@ end
 end 
 require 'pathname'
 def ConvertExcel(source,target)
-  Write(target,ReadExcel(File.join(Pathname.new(File.dirname(__FILE__)).realpath,source)))
+  # Write(target,ReadExcel(File.join(Pathname.new(File.dirname(__FILE__)).realpath,source)))
+  Write(target,ReadExcel(source))
 end
 
 module_function :Read
