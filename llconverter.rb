@@ -26,7 +26,7 @@ judgeIsWeekend = lambda do |str|
 end
 
 # dataPath = FileAccessor.CalcDataPath
-dataPath = '/home/aa/mySvn/800.限行/成果物/发布成果物/20160824'
+dataPath = '/home/aa/mySvn/800.限行/成果物/发布成果物/20160818'
 # 输入文件转换
 # holiday_file_name = File.join(dataPath,InputHoliday)
 # main_data_file_name = File.join(dataPath,InputMainData)

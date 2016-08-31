@@ -32,7 +32,8 @@ class AreaGeomWrap
 	attr_accessor :admcode
 
 	def to_json(*a)
-		{geo:geom,info: info_wrap_array}.to_json()
+		puts "geom count error found !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" unless geom.length == 1
+		{geo:geom.first,info: info_wrap_array}.to_json()
 	end
 end
 
