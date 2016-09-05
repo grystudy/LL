@@ -50,7 +50,7 @@ def output(key_,value_)
 	end
 end
 
-@shp_file_path = "/home/aa/mySvn/800.限行/成果物/发布成果物/20160824/shp"
+@shp_file_path = "/home/aa/mySvn/800.限行/成果物/发布成果物/shp"
 require File.join(File.dirname(__FILE__),"llShpReader.rb")
 return unless @read_result
 

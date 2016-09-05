@@ -26,7 +26,8 @@ judgeIsWeekend = lambda do |str|
 end
 
 # dataPath = FileAccessor.CalcDataPath
-dataPath = '/home/aa/mySvn/800.限行/成果物/发布成果物/20160818'
+base_path = '/home/aa/mySvn/800.限行/成果物/发布成果物'
+dataPath = File.join base_path,'20160901'
 # 输入文件转换
 # holiday_file_name = File.join(dataPath,InputHoliday)
 # main_data_file_name = File.join(dataPath,InputMainData)
@@ -113,6 +114,10 @@ inputMainData.each_with_index do |item,indexInMainData|
   rule = item[i_index_temp];
   i_index_temp = i_index_temp + 1;
   image = item[i_index_temp];
+
+  big_jpg_path = File.join(base_path,image+"big.jpg")
+  small_jpg_path = File.join(base_path,image+"small.jpg")
+  puts "#{main_data_id} pictures not found : #{image}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" unless File.exist?(big_jpg_path)&&File.exist?(small_jpg_path)      
 
   isRTRiqi = rType == "1";
   isRTXingqi = rType == "2";
@@ -311,10 +316,7 @@ inputMainData.each_with_index do |item,indexInMainData|
 
       llItem << rule
       llItem << image
-
-      big_jpg_path = File.join(dataPath,image+"big.jpg")
-      small_jpg_path = File.join(dataPath,image+"small.jpg")
-      puts "#{main_data_id} pictures not found : #{image}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" unless File.exist?(big_jpg_path)&&File.exist?(small_jpg_path)      
+      llItem << chepaihao
 
       lstLL << llItem
       llCount = llCount + 1
@@ -350,7 +352,7 @@ FileAccessor.Write(File.join(outputPath,"区域表.txt"),resultT)
 
 # 写主数据
 resultT = []
-resultT << %w(id city_code city_name date license_attri register type date_off_r thirty_one_r holiday_r weekend_r weekday_r time number english_number area_id msg_id create_at update_at limit_Info_Id rules image)
+resultT << %w(id city_code city_name date license_attri register type date_off_r thirty_one_r holiday_r weekend_r weekday_r time number english_number area_id msg_id create_at update_at limit_Info_Id rules image city_alias)
 dicCityCodeTo_DateToData.each do |keyP,valueP|
   valueP.dicDateToData.each_value do |value|
     value.each do |ele|
